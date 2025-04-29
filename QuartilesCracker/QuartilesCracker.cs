@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 
+namespace Quartiles;
 public class QuartilesCracker
 {
     // Init dictionary
@@ -8,19 +9,19 @@ public class QuartilesCracker
     // Find word. Given a string, sees if it is a word in the dictionary.
 
     // Maximum number of word chunks that can be used to form a word.
-    private const int MAX_CHUNKS = 2;
+    private const int MAX_CHUNKS = 5;
     public QuartilesCracker()
     {
 
     }
 
-    public static void getPermutations(List<string> chunksOutOfList, List<string> chunksInSet, HashSet<string> results)
+    public static void GetPermutations(List<string> chunksOutOfList, List<string> chunksInSet, int maxChunks, HashSet<string> permutations)
     {
-        if (chunksOutOfList.Count == MAX_CHUNKS)
+        if (chunksOutOfList.Count == maxChunks)
         {
             // Join the elements into one word and add it to results
             string permutation = string.Join("", chunksOutOfList);
-            results.Add(permutation);
+            permutations.Add(permutation);
             return;
         }
 
@@ -31,22 +32,23 @@ public class QuartilesCracker
 
             var newOut = new List<string>(chunksOutOfList) { element };
 
-            getPermutations(newOut, newBag, results);
+            GetPermutations(newOut, newBag, maxChunks, permutations);
         }
     }
 
     public static void PrintPermutationsRecursively()
     {
-        var results = new HashSet<string>(); // This will hold all the permutations
+        var permutations = new HashSet<string>();
 
-        getPermutations(new List<string>(), new List<string> {
+        GetPermutations([], [
             "A", "B", "C", "D", "E", "F",
             "AB", "AC", "AD", "AE",
             "BA", "BE", "BF",
             "ING", "IL", "IT", "IN",
             "IS", "TO", "OF", "ON", "AT", "BO", "PEEE", "JOE"
-        },
-        results
+        ],
+        MAX_CHUNKS,
+        permutations
         );
 
         // Print all the results
