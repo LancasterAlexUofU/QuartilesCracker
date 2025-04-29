@@ -5,6 +5,8 @@ VisualStudioVersion = 17.11.35219.272
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuartilesCracker", "QuartilesCracker\QuartilesCracker.csproj", "{D2F1DEC9-F84B-4232-A4AF-7C39AAAA0757}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuartilesTest", "QuartilesTest\QuartilesTest.csproj", "{ACEDEE35-1A03-436F-9A69-ED3A7C4F7740}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{D2F1DEC9-F84B-4232-A4AF-7C39AAAA0757}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2F1DEC9-F84B-4232-A4AF-7C39AAAA0757}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D2F1DEC9-F84B-4232-A4AF-7C39AAAA0757}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACEDEE35-1A03-436F-9A69-ED3A7C4F7740}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACEDEE35-1A03-436F-9A69-ED3A7C4F7740}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACEDEE35-1A03-436F-9A69-ED3A7C4F7740}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACEDEE35-1A03-436F-9A69-ED3A7C4F7740}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
