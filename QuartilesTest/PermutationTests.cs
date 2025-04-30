@@ -1,4 +1,3 @@
-
 using Quartiles;
 
 namespace QuartilesTest
@@ -9,12 +8,22 @@ namespace QuartilesTest
         [TestMethod]
         public void GetPermutations_PermutationSize1_ReturnsCorrectResult()
         {
-            //var chunks = new List<string> { "A", "B", "C", "D", "E", "F" };
-            //var expected = new List<string> { "A", "B", "C", "D", "E", "F" };
-            //var solver = new QuartilesCracker();
+            // 2024-05-30 Quartile
+            // https://pbs.twimg.com/media/GPKt8_UasAACWGe.jpg:large
+            // https://www.reddit.com/r/quartiles/comments/1d4577k/20240530/
+            var solver = new QuartilesCracker();
+            solver.chunks = new List<string> {
+                "gest", "lo", "nt", "ut",
+                "ger", "di", "ive", "ate",
+                "min", "eco", "gi", "ul",
+                "stu", "cal", "wo", "man",
+                "rum", "or", "mon", "ic",
+            };
 
-            //solver.GetPermutations([], chunks, 1, false);
-            //CollectionAssert.AreEquivalent(expected, solver.results);
+            var expected = new List<string> { "ate", "gi", "man", "rum", "or" };
+
+            solver.GetPermutations([], solver.chunks, 1, false);
+            CollectionAssert.AreEquivalent(expected, solver.results);
         }
 
         [TestMethod]
@@ -28,6 +37,56 @@ namespace QuartilesTest
                 "stu", "cal", "wo", "man",
                 "rum", "or", "mon", "ic",
             };
+
+            var expected = new List<string> { 
+                "digest", "dint", "gestate", "local", "lout", "manger", 
+                "manic", "manor", "minor", "orate", "rumor",
+                "stunt", "woman", "wont"
+            };
+
+            solver.GetPermutations([], solver.chunks, 2, false);
+            CollectionAssert.AreEquivalent(expected, solver.results);
+        }
+
+        [TestMethod]
+        public void GetPermutations_PermutationsSize3_ReturnsCorrectResult()
+        {
+            var solver = new QuartilesCracker();
+            solver.chunks = new List<string> {
+                "gest", "lo", "nt", "ut",
+                "ger", "di", "ive", "ate",
+                "min", "eco", "gi", "ul",
+                "stu", "cal", "wo", "man",
+                "rum", "or", "mon", "ic",
+            };
+
+            var expected = new List<string> { 
+                "callout", "caloric", "digestive", "germinate", "logical", 
+                "stuntman", 
+            };
+
+            solver.GetPermutations([], solver.chunks, 3, false);
+            CollectionAssert.AreEquivalent(expected, solver.results);
+        }
+
+        [TestMethod]
+        public void GetPermutations_PermutationsSize4_ReturnsCorrectResult()
+        {
+            var solver = new QuartilesCracker();
+            solver.chunks = new List<string> {
+                "gest", "lo", "nt", "ut",
+                "ger", "di", "ive", "ate",
+                "min", "eco", "gi", "ul",
+                "stu", "cal", "wo", "man",
+                "rum", "or", "mon", "ic",
+            };
+
+            var expected = new List<string> {
+                "diminutive", "ecological", "gesticulate", "rumormonger", "stuntwoman"
+            };
+
+            solver.GetPermutations([], solver.chunks, 4, false);
+            CollectionAssert.AreEquivalent(expected, solver.results);
         }
     }
 }

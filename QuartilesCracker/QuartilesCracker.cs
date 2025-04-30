@@ -1,96 +1,129 @@
-﻿using Microsoft.VisualBasic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace Quartiles;
 public class QuartilesCracker
 {
-    // Init dictionary
-    // Quartile class. Has information like max size of word chunk, max word chunks, etc.
-    // Permutation generator. Given a set of elements, returns a set of all possible permutations of elements.
-    // Find word. Given a string, sees if it is a word in the dictionary.
-
     // Maximum number of word chunks that can be used to form a word.
-    private const int MAX_CHUNKS = 5;
+    private const int MAX_CHUNKS = 4;
+
+    // Maximum number of lines (rows) in a quartile game
+    private const int MAX_LINES = 5;
+
+    // List of words that solve the quartile
     public List<string> results;
+
+    // Quartiles word chunks (i.e. the words like "gi", "eco", "pp")
     public List<string> chunks;
+
+    // HashSet that contains all words for quick lookup
+    public HashSet<string> dictionary;
+
+    // Current dictionary file name
+    private string currentDictionary = "oriList";
+
+    // Contains valid word - chunk pairings
+    private Dictionary<string, List<string>> wordChunkMapping;
     public QuartilesCracker()
     {
         results = [];
         chunks = [];
+
+        // 2of12.txt
+        // scrabble_dictionary.txt
+        string path = Path.Combine("Dictionaries", currentDictionary + ".txt");
+
+        dictionary = new HashSet<string>(File.ReadAllLines(path));
+        wordChunkMapping = [];
     }
 
     public void QuartilesDriver()
     {
+        List<string> remainingChunks = chunks;
+        Console.WriteLine("Stage 1");
 
+        while(results.Count <= MAX_LINES)
+        {
+            try
+            {
+                GetPermutations([], remainingChunks, MAX_CHUNKS, true);
+
+                // If reached, means word wasn't found
+                // Switch dictionary
+
+            }
+            catch(EarlyExitException ex)
+            {
+                Console.WriteLine($"Found word! {ex.Message}");
+
+                List<string> chunksUsed = wordChunkMapping[ex.Message];
+                remainingChunks.RemoveAll(chunks => chunksUsed.Contains(chunks));
+            }
+        }
+
+        Console.WriteLine("Stage 2");
+        for(int chunkSize = MAX_CHUNKS - 1; chunkSize >0; chunkSize--)
+        {
+            GetPermutations([], chunks, chunkSize, false);
+        }
     }
 
-    public void GetPermutations(List<string> chunksOutOfList, List<string> chunksInSet, int maxChunks, bool endEarly)
+    public void GetPermutations(List<string> chunksOutOfList, List<string> chunksInList, int maxChunks, bool endEarly)
     {
         if (chunksOutOfList.Count == maxChunks)
         {
             // Join the chunks into one word
             string permutation = string.Join("", chunksOutOfList);
 
-            if(IsWord(permutation))
+            if(dictionary.Contains(permutation))
             {
                 results.Add(permutation);
+                wordChunkMapping.Add(permutation, chunksOutOfList);
 
-                // Triggered when maxChunks equals MAX_CHUNKS (i.e. 5 under normal circumstances)
+                // Triggered when maxChunks equals MAX_CHUNKS (i.e. 4 under normal circumstances)
                 if(endEarly)
                 {
-                    throw new EarlyExitException();
+                    throw new EarlyExitException(permutation);
                 }
             }
 
             return;
         }
 
-        foreach (var element in chunksInSet)
+        foreach (var chunk in chunksInList)
         {
-            var newBag = new List<string>(chunksInSet);
-            newBag.Remove(element);
-            var newOut = new List<string>(chunksOutOfList) { element };
-            GetPermutations(newOut, newBag, maxChunks, endEarly);
+            var newChunkList = new List<string>(chunksInList);
+            newChunkList.Remove(chunk);
+            var newChunkOut = new List<string>(chunksOutOfList) { chunk };
+            GetPermutations(newChunkOut, newChunkList, maxChunks, endEarly);
         }
     }
 
-    //public static void PrintPermutationsRecursively()
-    //{
-    //    var permutations = new HashSet<string>();
-
-    //    GetPermutations([], [
-    //        "A", "B", "C", "D", "E", "F",
-    //        "AB", "AC", "AD", "AE",
-    //        "BA", "BE", "BF",
-    //        "ING", "IL", "IT", "IN",
-    //        "IS", "TO", "OF", "ON", "AT", "BO", "PEEE", "JOE"
-    //    ],
-    //    MAX_CHUNKS,
-    //    true
-    //    );
-
-    //    // Print all the results
-    //    //foreach (var word in results)
-    //    //{
-    //    //    Console.WriteLine(word);
-    //    //}
-
-    //    //Console.WriteLine($"Total permutations: {results.Count}");
-    //}
-
-    public static bool IsWord(string word)
+    public class EarlyExitException : Exception
     {
-        // If word is in dictionary, return true
-        return true;
+        public EarlyExitException(string message) : base(message)
+        {
+        }
     }
-
-    public class EarlyExitException : Exception { }
 
     public static void Main()
     {
+        QuartilesCracker solver = new QuartilesCracker();
+
+        solver.chunks = new List<string> {
+                "gest", "lo", "nt", "ut",
+                "ger", "di", "ive", "ate",
+                "min", "eco", "gi", "ul",
+                "stu", "cal", "wo", "man",
+                "rum", "or", "mon", "ic",
+            };
+
         var stopwatch = Stopwatch.StartNew();  // Start timing
 
         //PrintPermutationsRecursively();
+
+        Console.WriteLine("Cracking!");
+
+        solver.QuartilesDriver();
 
         stopwatch.Stop();  // Stop timing
         Console.WriteLine($"Time taken: {stopwatch.ElapsedMilliseconds} ms");
