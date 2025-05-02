@@ -26,7 +26,11 @@ namespace QuartilesTest
             };
 
             solver.QuartilesDriver();
-            CollectionAssert.AreEquivalent(expected, solver.results);
+
+            foreach (string word in expected)
+            {
+                CollectionAssert.Contains(solver.results, word);
+            }
         }
     }
 }

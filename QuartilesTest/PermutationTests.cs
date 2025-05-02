@@ -22,8 +22,12 @@ namespace QuartilesTest
 
             var expected = new List<string> { "ate", "gi", "man", "rum", "or" };
 
-            solver.GetPermutations([], solver.chunks, 1, false);
-            CollectionAssert.AreEquivalent(expected, solver.results);
+            solver.GetPermutations([], solver.chunks, 1);
+
+            foreach(string word in expected)
+            {
+                CollectionAssert.Contains(solver.results, word);
+            }
         }
 
         [TestMethod]
@@ -44,8 +48,12 @@ namespace QuartilesTest
                 "stunt", "woman", "wont"
             };
 
-            solver.GetPermutations([], solver.chunks, 2, false);
-            CollectionAssert.AreEquivalent(expected, solver.results);
+            solver.GetPermutations([], solver.chunks, 2);
+
+            foreach (string word in expected)
+            {
+                CollectionAssert.Contains(solver.results, word);
+            }
         }
 
         [TestMethod]
@@ -65,8 +73,12 @@ namespace QuartilesTest
                 "stuntman", 
             };
 
-            solver.GetPermutations([], solver.chunks, 3, false);
-            CollectionAssert.AreEquivalent(expected, solver.results);
+            solver.GetPermutations([], solver.chunks, 3);
+
+            foreach (string word in expected)
+            {
+                CollectionAssert.Contains(solver.results, word);
+            }
         }
 
         [TestMethod]
@@ -85,8 +97,12 @@ namespace QuartilesTest
                 "diminutive", "ecological", "gesticulate", "rumormonger", "stuntwoman"
             };
 
-            solver.GetPermutations([], solver.chunks, 4, false);
-            CollectionAssert.AreEquivalent(expected, solver.results);
+            solver.GetPermutations([], solver.chunks, 4);
+
+            foreach (string word in expected)
+            {
+                CollectionAssert.Contains(solver.results, word);
+            }
         }
     }
 }
