@@ -19,7 +19,7 @@ public class QuartilesCracker
     public HashSet<string> dictionary;
 
     // Current dictionary file name
-    private string currentDictionary = "oriList";
+    private string currentDictionary = "quartiles_dictionary";
 
     // Contains valid word - chunk pairings
     private Dictionary<string, List<string>> wordChunkMapping;
@@ -33,41 +33,19 @@ public class QuartilesCracker
         string path = Path.Combine("Dictionaries", currentDictionary + ".txt");
 
         dictionary = new HashSet<string>(File.ReadAllLines(path));
+
         wordChunkMapping = [];
     }
 
     public void QuartilesDriver()
     {
-        List<string> remainingChunks = chunks;
-        Console.WriteLine("Stage 1");
-
-        while(results.Count <= MAX_LINES)
+        for(int chunkSize = MAX_CHUNKS; chunkSize > 0; chunkSize--)
         {
-            try
-            {
-                GetPermutations([], remainingChunks, MAX_CHUNKS, true);
-
-                // If reached, means word wasn't found
-                // Switch dictionary
-
-            }
-            catch(EarlyExitException ex)
-            {
-                Console.WriteLine($"Found word! {ex.Message}");
-
-                List<string> chunksUsed = wordChunkMapping[ex.Message];
-                remainingChunks.RemoveAll(chunks => chunksUsed.Contains(chunks));
-            }
-        }
-
-        Console.WriteLine("Stage 2");
-        for(int chunkSize = MAX_CHUNKS - 1; chunkSize >0; chunkSize--)
-        {
-            GetPermutations([], chunks, chunkSize, false);
+            GetPermutations([], chunks, chunkSize);
         }
     }
 
-    public void GetPermutations(List<string> chunksOutOfList, List<string> chunksInList, int maxChunks, bool endEarly)
+    public void GetPermutations(List<string> chunksOutOfList, List<string> chunksInList, int maxChunks)
     {
         if (chunksOutOfList.Count == maxChunks)
         {
@@ -78,12 +56,6 @@ public class QuartilesCracker
             {
                 results.Add(permutation);
                 wordChunkMapping.Add(permutation, chunksOutOfList);
-
-                // Triggered when maxChunks equals MAX_CHUNKS (i.e. 4 under normal circumstances)
-                if(endEarly)
-                {
-                    throw new EarlyExitException(permutation);
-                }
             }
 
             return;
@@ -94,19 +66,14 @@ public class QuartilesCracker
             var newChunkList = new List<string>(chunksInList);
             newChunkList.Remove(chunk);
             var newChunkOut = new List<string>(chunksOutOfList) { chunk };
-            GetPermutations(newChunkOut, newChunkList, maxChunks, endEarly);
-        }
-    }
-
-    public class EarlyExitException : Exception
-    {
-        public EarlyExitException(string message) : base(message)
-        {
+            GetPermutations(newChunkOut, newChunkList, maxChunks);
         }
     }
 
     public static void Main()
     {
+        var stopwatch = Stopwatch.StartNew();  // Start timing
+
         QuartilesCracker solver = new QuartilesCracker();
 
         solver.chunks = new List<string> {
@@ -117,8 +84,6 @@ public class QuartilesCracker
                 "rum", "or", "mon", "ic",
             };
 
-        var stopwatch = Stopwatch.StartNew();  // Start timing
-
         //PrintPermutationsRecursively();
 
         Console.WriteLine("Cracking!");
@@ -128,5 +93,9 @@ public class QuartilesCracker
         stopwatch.Stop();  // Stop timing
         Console.WriteLine($"Time taken: {stopwatch.ElapsedMilliseconds} ms");
 
+        foreach (var word in solver.results)
+        {
+            Console.WriteLine(word);
+        }
     }
 }
