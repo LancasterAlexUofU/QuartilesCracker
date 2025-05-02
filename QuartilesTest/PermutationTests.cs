@@ -6,7 +6,7 @@ namespace QuartilesTest
     public class PermutationTests
     {
         [TestMethod]
-        public void GetPermutations_PermutationSize1_ReturnsCorrectResult()
+        public void GetPermutations_PermutationSize1_ContainsCorrectResults()
         {
             // 2024-05-30 Quartile
             // https://pbs.twimg.com/media/GPKt8_UasAACWGe.jpg:large
@@ -31,7 +31,7 @@ namespace QuartilesTest
         }
 
         [TestMethod]
-        public void GetPermutations_PermutationsSize2_ReturnsCorrectResult()
+        public void GetPermutations_PermutationsSize2_ContainsCorrectResults()
         {
             var solver = new QuartilesCracker();
             solver.chunks = new List<string> {
@@ -57,7 +57,7 @@ namespace QuartilesTest
         }
 
         [TestMethod]
-        public void GetPermutations_PermutationsSize3_ReturnsCorrectResult()
+        public void GetPermutations_PermutationsSize3_ContainsCorrectResults()
         {
             var solver = new QuartilesCracker();
             solver.chunks = new List<string> {
@@ -82,7 +82,7 @@ namespace QuartilesTest
         }
 
         [TestMethod]
-        public void GetPermutations_PermutationsSize4_ReturnsCorrectResult()
+        public void GetPermutations_PermutationsSize4_ContainsCorrectResults()
         {
             var solver = new QuartilesCracker();
             solver.chunks = new List<string> {

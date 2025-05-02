@@ -77,14 +77,12 @@ public class QuartilesCracker
         QuartilesCracker solver = new QuartilesCracker();
 
         solver.chunks = new List<string> {
-                "gest", "lo", "nt", "ut",
-                "ger", "di", "ive", "ate",
-                "min", "eco", "gi", "ul",
-                "stu", "cal", "wo", "man",
-                "rum", "or", "mon", "ic",
-            };
-
-        //PrintPermutationsRecursively();
+            "og", "hic", "od", "ara",
+            "sc", "ella", "nks", "wi",
+            "rap", "dem", "ly", "ny",
+            "ent", "ial", "cam", "ho",
+            "mi", "rie", "pot", "de",
+        };
 
         Console.WriteLine("Cracking!");
 
