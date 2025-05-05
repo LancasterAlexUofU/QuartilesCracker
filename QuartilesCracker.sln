@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuartilesTest", "QuartilesT
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DictionaryMerger", "DictionaryMerger\DictionaryMerger.csproj", "{B2D70BAB-4116-4AEE-993A-90D631EBAE6B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExtractQuartilesGrid", "ExtractQuartilesGrid\ExtractQuartilesGrid.csproj", "{851692A4-AAEE-44B1-8958-C0A7E6CE7A43}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuartilesToText", "QuartilesToText\QuartilesToText.csproj", "{2280AA7C-A04F-438C-82EA-C8C66BD4CEBA}"
 EndProject
 Global
@@ -31,10 +29,6 @@ Global
 		{B2D70BAB-4116-4AEE-993A-90D631EBAE6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B2D70BAB-4116-4AEE-993A-90D631EBAE6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B2D70BAB-4116-4AEE-993A-90D631EBAE6B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{851692A4-AAEE-44B1-8958-C0A7E6CE7A43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{851692A4-AAEE-44B1-8958-C0A7E6CE7A43}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{851692A4-AAEE-44B1-8958-C0A7E6CE7A43}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{851692A4-AAEE-44B1-8958-C0A7E6CE7A43}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2280AA7C-A04F-438C-82EA-C8C66BD4CEBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2280AA7C-A04F-438C-82EA-C8C66BD4CEBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2280AA7C-A04F-438C-82EA-C8C66BD4CEBA}.Release|Any CPU.ActiveCfg = Release|Any CPU

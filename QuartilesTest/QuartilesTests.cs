@@ -30,7 +30,7 @@ namespace QuartilesTest
 
             solver.QuartilesDriver();
 
-            foreach (string word in expected)
+            foreach(string word in expected)
             {
                 CollectionAssert.Contains(solver.results, word);
             }
@@ -62,7 +62,7 @@ namespace QuartilesTest
 
             solver.QuartilesDriver();
 
-            foreach (string word in expected)
+            foreach(string word in expected)
             {
                 CollectionAssert.Contains(solver.results, word);
             }
@@ -93,7 +93,7 @@ namespace QuartilesTest
 
             solver.QuartilesDriver();
 
-            foreach (string word in expected)
+            foreach(string word in expected)
             {
                 CollectionAssert.Contains(solver.results, word);
             }

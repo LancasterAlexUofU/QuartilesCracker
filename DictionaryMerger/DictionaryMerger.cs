@@ -32,7 +32,7 @@ class ListMerger
         string destinationPathQuartile = Path.Combine(quartilesCrackerRoot, "Dictionaries", destinationDictionary + ".txt"); 
         
 
-        if (!File.Exists(sourcePathMerger) || !File.Exists(destinationPathMerger) || !File.Exists(destinationPathQuartile))
+        if(!File.Exists(sourcePathMerger) || !File.Exists(destinationPathMerger) || !File.Exists(destinationPathQuartile))
         {
             Console.WriteLine("One or more files do not exist.");
             return;
@@ -67,7 +67,7 @@ class ListMerger
             File.WriteAllLines(destinationPathQuartile, sortedWords);
             Console.WriteLine("Merge complete. Destination file updated.");
         }
-        catch (Exception ex)
+        catch(Exception ex)
         {
             Console.WriteLine("An error occurred: " + ex.Message);
         }

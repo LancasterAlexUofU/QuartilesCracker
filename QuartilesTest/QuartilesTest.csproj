@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\QuartilesCracker\QuartilesCracker.csproj" />
+    <ProjectReference Include="..\QuartilesToText\QuartilesToText.csproj" />
   </ItemGroup>
 
   <ItemGroup>

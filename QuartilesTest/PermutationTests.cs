@@ -50,7 +50,7 @@ namespace QuartilesTest
 
             solver.GetPermutations([], solver.chunks, 2);
 
-            foreach (string word in expected)
+            foreach(string word in expected)
             {
                 CollectionAssert.Contains(solver.results, word);
             }
@@ -75,7 +75,7 @@ namespace QuartilesTest
 
             solver.GetPermutations([], solver.chunks, 3);
 
-            foreach (string word in expected)
+            foreach(string word in expected)
             {
                 CollectionAssert.Contains(solver.results, word);
             }
@@ -99,7 +99,7 @@ namespace QuartilesTest
 
             solver.GetPermutations([], solver.chunks, 4);
 
-            foreach (string word in expected)
+            foreach(string word in expected)
             {
                 CollectionAssert.Contains(solver.results, word);
             }

@@ -1,23 +1,66 @@
-﻿using Tesseract;
+﻿using System.Text.RegularExpressions;
+using Tesseract;
 
-// Go back 3 levels from bin\debug\netX.Y to save the file merge in the project folder, not the debug folder
-string QTTRoot = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\"));
+namespace QuartilesToText;
 
-string dataPath = Path.Combine(QTTRoot, "tessdata");
-string imageFolder = Path.Combine(QTTRoot, "QuartileImages");
-
-string imageName = "quartiles1.png";
-string imagePath = Path.Combine(imageFolder, imageName);
-
-string outputPath = Path.Combine(QTTRoot, "chunks.txt");
-
-using (var engine = new TesseractEngine(dataPath, "eng"))
+public class QTT
 {
-    engine.DefaultPageSegMode = PageSegMode.SingleBlock; // SingleBlock works best for grid images
+    private const int MAX_CHUNK_SIZE = 5;
 
-    var image = Pix.LoadFromFile(imagePath);
-    var page = engine.Process(image);
-    var text = page.GetText();
+    // Only matches lower case letters between size 1-max size separated by non-word characters
+    private string regex = $@"\b[a-z]{{1,{MAX_CHUNK_SIZE}}}\b";
 
-    File.WriteAllText(outputPath, text);
+    private string dataPath;
+    private string imagePath;
+    private TesseractEngine engine;
+    
+    public List<string> chunks;
+
+    public QTT(string imageName)
+    {
+        // Go back 3 levels from bin\debug\netX.Y to get the project directory
+        string projectRoot = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\"));
+
+        string QTTRoot = Path.GetFullPath(Path.Combine(projectRoot, @"..\QuartilesToText"));
+
+        string imageFolder = Path.Combine(QTTRoot, "QuartileImages");
+        
+        dataPath = Path.Combine(QTTRoot, "tessdata");
+        imagePath = Path.Combine(imageFolder, imageName);
+
+        if(!File.Exists(imagePath))
+        {
+            throw new Exception($"Image not found: {imagePath}");
+        }
+
+        engine = new TesseractEngine(dataPath, "eng");
+        engine.DefaultPageSegMode = PageSegMode.SingleBlock;
+
+        chunks = new List<string>();
+    }
+
+    public void ExtractChunks()
+    {
+        string chunkText;
+
+        using(engine)
+        {
+            Pix image = Pix.LoadFromFile(imagePath);
+            Page page = engine.Process(image);
+            chunkText = page.GetText().ToLower();
+        }
+
+        var matches = Regex.Matches(chunkText, regex);
+
+        foreach(Match match in matches)
+        {
+            chunks.Add(match.Value);
+        }
+    }
+
+    public static void Main()
+    {
+        var extractor = new QTT("quartiles3.png");
+        extractor.ExtractChunks();
+    }
 }
