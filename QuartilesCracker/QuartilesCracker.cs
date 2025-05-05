@@ -5,10 +5,10 @@ namespace Quartiles;
 public class QuartilesCracker
 {
     // Maximum number of word chunks that can be used to form a word.
-    private static int MAX_CHUNKS;
+    private int MAX_CHUNKS;
 
     // Maximum number of lines (rows) in a quartile game
-    private static int MAX_LINES;
+    private int MAX_LINES;
 
     // List of words that solve the quartile
     public List<string> results;
@@ -93,7 +93,7 @@ public class QuartilesCracker
     /// </summary>
     /// <param name="chunks">Chunk list generated from image-text extraction</param>
     /// <exception cref="Exception">Thrown if the size of the list doesn't match board size</exception>
-    private static void VerifyChunks(List<string> chunks)
+    public void VerifyChunks(List<string> chunks)
     {
         if(chunks.Count != MAX_CHUNKS * MAX_LINES)
         {
@@ -110,7 +110,7 @@ public class QuartilesCracker
         // Extract image data and store in chunk list
         var extractor = new QTT("quartiles1.png");
         extractor.ExtractChunks();
-        VerifyChunks(extractor.chunks);
+        solver.VerifyChunks(extractor.chunks);
         solver.chunks = extractor.chunks;
 
         // Solve Puzzle

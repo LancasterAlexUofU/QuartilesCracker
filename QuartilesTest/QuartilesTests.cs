@@ -1,4 +1,5 @@
 ﻿using Quartiles;
+using QuartilesToText;
 namespace QuartilesTest
 {
     [TestClass]
@@ -31,6 +32,34 @@ namespace QuartilesTest
             solver.QuartilesDriver();
 
             foreach(string word in expected)
+            {
+                CollectionAssert.Contains(solver.results, word);
+            }
+        }
+
+
+        [TestMethod]
+        public void QuartilesDriver_SolveQuartile1FromImage_ReturnsCorrectResult()
+        {
+            var solver = new QuartilesCracker();
+            var extractor = new QTT("QuartilesTests_quartiles1.png");
+            extractor.ExtractChunks();
+
+            solver.VerifyChunks(extractor.chunks);
+            solver.chunks = extractor.chunks;
+
+            var expected = new List<string> {
+                "diminutive", "ecological", "gesticulate", "rumormonger", "stuntwoman",
+                "callout", "caloric", "digestive", "germinate", "logical",
+                "stuntman", "digest", "dint", "gestate", "local",
+                "lout", "manger", "manic", "manor", "minor",
+                "orate", "rumor", "stunt", "woman", "wont",
+                "ate", "gi", "man", "rum", "or"
+            };
+
+            solver.QuartilesDriver();
+
+            foreach (string word in expected)
             {
                 CollectionAssert.Contains(solver.results, word);
             }
@@ -94,6 +123,34 @@ namespace QuartilesTest
             solver.QuartilesDriver();
 
             foreach(string word in expected)
+            {
+                CollectionAssert.Contains(solver.results, word);
+            }
+        }
+
+
+        [TestMethod]
+        public void QuartilesDriver_SolveQuartile3FromImage_ReturnsCorrectResult()
+        {
+            var solver = new QuartilesCracker();
+            var extractor = new QTT("QuartilesTests_quartiles3.png");
+            extractor.ExtractChunks();
+
+            solver.VerifyChunks(extractor.chunks);
+            solver.chunks = extractor.chunks;
+
+            var expected = new List<string> {
+                "accommodate", "camouflage", "chatterbox", "conquistador", "groundwork",
+                "age", "at", "ate", "attach", "box",
+                "boxwood", "cam", "chat", "chatter", "con",
+                "conch", "condor", "conflate", "flat", "flatter",
+                "groat", "ground", "ouch", "outer", "tater",
+                "wood", "work", "wound"
+            };
+
+            solver.QuartilesDriver();
+
+            foreach (string word in expected)
             {
                 CollectionAssert.Contains(solver.results, word);
             }
