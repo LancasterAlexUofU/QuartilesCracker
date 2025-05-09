@@ -17,12 +17,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DictionaryMerger\DictionaryMerger.csproj" />
     <ProjectReference Include="..\QuartilesCracker\QuartilesCracker.csproj" />
     <ProjectReference Include="..\QuartilesToText\QuartilesToText.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="TestDictionary\" />
+    <Folder Include="TestSource\" />
   </ItemGroup>
 
 </Project>
