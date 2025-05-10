@@ -55,6 +55,8 @@ public class DictionaryMerger
     public string quartilesTestDictFolder;
     public string quartilesTestDictCopyFolder;
     public string quartilesTestSourceFolder;
+    public string quartilesTestListsFolder;
+    public string quartilesTestListsCopyFolder;
 
     public DictionaryMerger()
     {
@@ -110,6 +112,8 @@ public class DictionaryMerger
         quartilesTestDictFolder = Path.Combine(quartilesTestRoot, "TestDictionary");
         quartilesTestDictCopyFolder = Path.Combine(quartilesTestRoot, "TestDictionaryCopy");
         quartilesTestSourceFolder = Path.Combine(quartilesTestRoot, "TestSource");
+        quartilesTestListsFolder = Path.Combine(quartilesTestRoot, "TestLists");
+        quartilesTestListsCopyFolder = Path.Combine(quartilesTestRoot, "TestListsCopy");
 
         VerifyPath(dictionaryMergerDictFolder);
         VerifyPath(dictionaryUpdaterListsFolder);
@@ -117,6 +121,8 @@ public class DictionaryMerger
         VerifyPath(quartilesTestDictFolder);
         VerifyPath(quartilesTestDictCopyFolder);
         VerifyPath(quartilesTestSourceFolder);
+        VerifyPath(quartilesTestListsFolder);
+        VerifyPath(quartilesTestListsCopyFolder);
     }
 
     /// <summary>

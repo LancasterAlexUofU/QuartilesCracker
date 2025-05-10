@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DictionaryMerger\DictionaryMerger.csproj" />
+    <ProjectReference Include="..\DictionaryUpdater\DictionaryUpdater.csproj" />
     <ProjectReference Include="..\QuartilesCracker\QuartilesCracker.csproj" />
     <ProjectReference Include="..\QuartilesToText\QuartilesToText.csproj" />
   </ItemGroup>
@@ -27,8 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="TestDictionaryCopy\" />
-    <Folder Include="TestDictionary\" />
     <Folder Include="TestSource\" />
   </ItemGroup>
 

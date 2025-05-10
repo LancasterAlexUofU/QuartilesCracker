@@ -1,6 +1,6 @@
 ﻿using Merger;
 
-namespace DictionaryUpdater;
+namespace Updater;
 
 public class DictionaryUpdater
 {
@@ -53,13 +53,29 @@ public class DictionaryUpdater
 
         merger.VerifyPath(knownWordsPath);
         merger.VerifyPath(invalidWordsPath);
+        merger.VerifyPath(dictionaryFolder);
+    }
+
+    public DictionaryUpdater(string listsFolder, string dictionaryFolder)
+    {
+        var merger = new DictionaryMerger();
+        this.listsFolder = listsFolder;
+        this.dictionaryFolder = dictionaryFolder;
+
+        knownWordsPath = Path.Combine(listsFolder, knownWordsName + ".txt");
+        invalidWordsPath = Path.Combine(listsFolder, invalidWordsName + ".txt");
+
+        merger.VerifyPath(knownWordsPath);
+        merger.VerifyPath(invalidWordsPath);
+        merger.VerifyPath(listsFolder);
+        merger.VerifyPath(dictionaryFolder);
     }
 
     /// <summary>
     /// Given a word, add it to all used dictionaries
     /// </summary>
     /// <param name="word">Word to add to all dictionaries in the dictionary folder</param>
-    public void AddToDictionary(string word)
+    public void AddToDictionaries(string word)
     {
         List<string> dictionaries = GetDictionaries();
         DictionaryMerger merger;
@@ -75,7 +91,7 @@ public class DictionaryUpdater
     /// Given a set of words, add them to all used dictionaries
     /// </summary>
     /// <param name="words">A set of words to add to all dictionaries in the dictionary folder</param>
-    public void AddToDictionary(HashSet<string> words)
+    public void AddToDictionaries(HashSet<string> words)
     {
         List<string> dictionaries = GetDictionaries();
         DictionaryMerger merger;
@@ -91,7 +107,7 @@ public class DictionaryUpdater
     /// Given a word, remove it from all used dictionaries
     /// </summary>
     /// <param name="word">Word to remove from all dictionaries in the dictionary folder</param>
-    public void RemoveFromDictionary(string word)
+    public void RemoveFromDictionaries(string word)
     {
         List<string> dictionaries = GetDictionaries();
         DictionaryMerger merger;
@@ -107,7 +123,7 @@ public class DictionaryUpdater
     /// Given a set of words, remove them from all used dictionaries
     /// </summary>
     /// <param name="words">Words to remove from all dictionaries in the dictionary folder</param>
-    public void RemoveFromDictionary(HashSet<string> words)
+    public void RemoveFromDictionaries(HashSet<string> words)
     {
         List<string> dictionaries = GetDictionaries();
         DictionaryMerger merger;
@@ -169,7 +185,7 @@ public class DictionaryUpdater
     /// <param name="knownWord">A known word in the quartile solution</param>
     public void AddUpdate(string knownWord)
     {
-        AddToDictionary(knownWord);
+        AddToDictionaries(knownWord);
         AddToKnownWords(knownWord);
     }
 
@@ -184,7 +200,7 @@ public class DictionaryUpdater
     /// <param name="knownWords">A set of known word in a quartile solution</param>
     public void AddUpdate(HashSet<string> knownWords)
     {
-        AddToDictionary(knownWords);
+        AddToDictionaries(knownWords);
         AddToKnownWords(knownWords);
     }
 
@@ -194,7 +210,7 @@ public class DictionaryUpdater
     /// <param name="invalidWord">A word that isn't a valid for a quartiles solution</param>
     public void RemoveUpdate(string invalidWord)
     {
-        RemoveFromDictionary(invalidWord);
+        RemoveFromDictionaries(invalidWord);
         AddToInvalidWords(invalidWord);
     }
 
@@ -204,7 +220,7 @@ public class DictionaryUpdater
     /// <param name="invalidWords"></param>
     public void RemoveUpdate(HashSet<string> invalidWords)
     {
-        RemoveFromDictionary(invalidWords);
+        RemoveFromDictionaries(invalidWords);
         AddToInvalidWords(invalidWords);
     }
 
@@ -251,7 +267,7 @@ public class DictionaryUpdater
     private List<string> GetDictionaries()
     {
         List<string> dictionaries = Directory.GetFiles(dictionaryFolder, "*.txt")
-                             .Select(Path.GetFileName)
+                             .Select(Path.GetFileNameWithoutExtension)
                              .ToList();
 
         VerifyDictionaries(dictionaries);
