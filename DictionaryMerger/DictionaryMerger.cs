@@ -181,7 +181,6 @@ public class DictionaryMerger
             // Sorts alphabetically and writes back to destination dictionary — source remains the same
             var sortedWords = destinationWords.OrderBy(word => word).ToList();
             File.WriteAllLines(destinationPath, sortedWords);
-            Console.WriteLine("Merge complete. Destination file updated.");
         }
 
         catch (Exception ex)

@@ -25,6 +25,8 @@ public class QuartilesCracker
     // Contains valid word - chunk pairings
     private Dictionary<string, List<string>> wordChunkMapping;
 
+    private string projectRoot = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\.."));
+
     /// <summary>
     /// Constructor for QuartilesCracker.
     ///
@@ -37,10 +39,11 @@ public class QuartilesCracker
 
         results = [];
         chunks = [];
-
+        
         currentDictionary = "quartiles_dictionary";
+        string quartilesDictFolder = Path.GetFullPath(Path.Combine(projectRoot, @"..\QuartilesCracker\Dictionaries"));
+        string path = Path.Combine(quartilesDictFolder, currentDictionary + ".txt");
 
-        string path = Path.Combine("Dictionaries", currentDictionary + ".txt");
         dictionary = new HashSet<string>(File.ReadAllLines(path));
         wordChunkMapping = [];
     }

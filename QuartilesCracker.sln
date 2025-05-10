@@ -9,9 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuartilesTest", "QuartilesT
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DictionaryMerger", "DictionaryMerger\DictionaryMerger.csproj", "{B2D70BAB-4116-4AEE-993A-90D631EBAE6B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuartilesToText", "QuartilesToText\QuartilesToText.csproj", "{2280AA7C-A04F-438C-82EA-C8C66BD4CEBA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuartilesToText", "QuartilesToText\QuartilesToText.csproj", "{2280AA7C-A04F-438C-82EA-C8C66BD4CEBA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DictionaryUpdater", "DictionaryUpdater\DictionaryUpdater.csproj", "{37B35EA3-F595-4C44-86F0-D8C37E5D45B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DictionaryUpdater", "DictionaryUpdater\DictionaryUpdater.csproj", "{37B35EA3-F595-4C44-86F0-D8C37E5D45B9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuartilesAnswers", "QuartilesAnswers\QuartilesAnswers.csproj", "{F0BCA178-FE2F-4ECA-BAD7-116DE07B1A64}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{37B35EA3-F595-4C44-86F0-D8C37E5D45B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{37B35EA3-F595-4C44-86F0-D8C37E5D45B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{37B35EA3-F595-4C44-86F0-D8C37E5D45B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0BCA178-FE2F-4ECA-BAD7-116DE07B1A64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0BCA178-FE2F-4ECA-BAD7-116DE07B1A64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0BCA178-FE2F-4ECA-BAD7-116DE07B1A64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0BCA178-FE2F-4ECA-BAD7-116DE07B1A64}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
