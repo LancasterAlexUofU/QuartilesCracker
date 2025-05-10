@@ -83,7 +83,7 @@ namespace QuartilesTest
         {
             var paths = new DictionaryMerger();
             string dictionaryName = "2of12";
-            string dictionaryPath = Path.Combine(paths.quartilesCrackerDictFolder, "quartiles_dictionary.txt");
+            string dictionaryPath = Path.Combine(paths.quartilesTestDictFolder, dictionaryName + ".txt");
             string dictionaryCopyPath = Path.Combine(paths.quartilesTestDictCopyFolder, dictionaryName + ".txt");
 
             var merger = new DictionaryMerger(dictionaryPath);

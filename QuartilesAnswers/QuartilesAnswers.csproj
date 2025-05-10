@@ -12,10 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="QuartilesAnswers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\DictionaryUpdater\DictionaryUpdater.csproj" />
   </ItemGroup>
 
