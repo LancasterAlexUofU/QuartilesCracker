@@ -15,4 +15,8 @@
     <ProjectReference Include="..\DictionaryUpdater\DictionaryUpdater.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="QuartilesAnswers\" />
+  </ItemGroup>
+
 </Project>

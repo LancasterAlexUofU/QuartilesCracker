@@ -180,7 +180,7 @@ public class DictionaryMerger
 
             // Sorts alphabetically and writes back to destination dictionary — source remains the same
             var sortedWords = destinationWords.OrderBy(word => word).ToList();
-            File.WriteAllLines(destinationPath, sortedWords);
+            WriteAllLines(destinationPath, sortedWords);
         }
 
         catch (Exception ex)
@@ -216,6 +216,24 @@ public class DictionaryMerger
         if (!Directory.Exists(filePath) && !File.Exists(filePath))
         {
             throw new Exception($"File path does not exist: {filePath}");
+        }
+    }
+
+    private void WriteAllLines(string destinationPath, List<string> words)
+    {
+        using var writer = new StreamWriter(destinationPath);
+
+        for (int i = 0; i < words.Count; i++)
+        {
+            if (i < words.Count - 1)
+            {
+                writer.WriteLine(words.ElementAt(i));
+            }
+
+            else
+            {
+                writer.Write(words.ElementAt(i)); // no newline
+            }
         }
     }
 

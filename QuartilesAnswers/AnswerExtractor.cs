@@ -48,18 +48,25 @@ class AnswerExtractor
 
             if (wordList != null)
             {
-                using var writer = new StreamWriter(outputPath);
-                foreach (var wordNode in wordList)
-                {
-                    string word = wordNode.InnerText.Trim().ToLower();
+                var words = wordList.Select(node => node.InnerText.Trim().ToLower()).ToHashSet();
 
-                    // The last word in wordList contains null which adds an empty character to the file (which we don't want)
-                    if (!string.IsNullOrEmpty(word))
+                // Write all words, except the last one, with newline; last one without newline
+                await using var writer = new StreamWriter(outputPath);
+
+                for (int i = 0; i < words.Count; i++)
+                {
+                    if (i < words.Count - 1)
                     {
-                        await writer.WriteLineAsync(word);
-                        updater.AddUpdate(word);
+                        await writer.WriteLineAsync(words.ElementAt(i));
+                    }
+
+                    else
+                    {
+                        await writer.WriteAsync(words.ElementAt(i)); // no newline
                     }
                 }
+
+                updater.AddUpdate(words);
 
                 Console.WriteLine($"Saved answers to {outputPath}.");
             }
@@ -69,9 +76,9 @@ class AnswerExtractor
                 Console.WriteLine("No answers found on this page.");
             }
 
-            var random = new Random();
-            int delay = random.Next(1000, 1750); // add slight random "human-like" delay to avoid overwhelming the server
-            await Task.Delay(delay);
+            //var random = new Random();
+            //int delay = random.Next(1000, 1750); // add slight random "human-like" delay to avoid overwhelming the server
+            //await Task.Delay(delay);
         }
     }
 }
