@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="TestDictionaryCopy\" />
     <Folder Include="TestDictionary\" />
     <Folder Include="TestSource\" />
   </ItemGroup>

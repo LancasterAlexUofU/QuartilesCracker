@@ -258,6 +258,8 @@ public class DictionaryUpdater
 
         return dictionaries;
     }
+
+    public static void Main(string[] args) { }
 }
 
 

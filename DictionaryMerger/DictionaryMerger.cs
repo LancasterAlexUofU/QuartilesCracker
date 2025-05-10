@@ -52,6 +52,9 @@ public class DictionaryMerger
     public string dictionaryMergerDictFolder;
     public string dictionaryUpdaterListsFolder;
     public string quartilesCrackerDictFolder;
+    public string quartilesTestDictFolder;
+    public string quartilesTestDictCopyFolder;
+    public string quartilesTestSourceFolder;
 
     public DictionaryMerger()
     {
@@ -95,18 +98,25 @@ public class DictionaryMerger
     /// </summary>
     private void InitializeCommonFolderPaths()
     {
-
-        var dictionaryMergerRoot = Path.Combine(projectRoot, @"..\DictionaryMerger");
-        var dictionaryUpdaterRoot = Path.Combine(projectRoot, @"..\DictionaryUpdater");
-        var quartilesCrackerRoot = Path.Combine(projectRoot, @"..\QuartilesCracker");
+        // Ensure GetFullPath for ../ to work correctly
+        var dictionaryMergerRoot = Path.GetFullPath(Path.Combine(projectRoot, @"..\DictionaryMerger"));
+        var dictionaryUpdaterRoot = Path.GetFullPath(Path.Combine(projectRoot, @"..\DictionaryUpdater"));
+        var quartilesCrackerRoot = Path.GetFullPath(Path.Combine(projectRoot, @"..\QuartilesCracker"));
+        var quartilesTestRoot = Path.GetFullPath(Path.Combine(projectRoot, @"..\QuartilesTest"));
 
         dictionaryMergerDictFolder = Path.Combine(dictionaryMergerRoot, "Dictionaries");
         dictionaryUpdaterListsFolder = Path.Combine(dictionaryUpdaterRoot, "Lists");
         quartilesCrackerDictFolder = Path.Combine(quartilesCrackerRoot, "Dictionaries");
+        quartilesTestDictFolder = Path.Combine(quartilesTestRoot, "TestDictionary");
+        quartilesTestDictCopyFolder = Path.Combine(quartilesTestRoot, "TestDictionaryCopy");
+        quartilesTestSourceFolder = Path.Combine(quartilesTestRoot, "TestSource");
 
         VerifyPath(dictionaryMergerDictFolder);
         VerifyPath(dictionaryUpdaterListsFolder);
         VerifyPath(quartilesCrackerDictFolder);
+        VerifyPath(quartilesTestDictFolder);
+        VerifyPath(quartilesTestDictCopyFolder);
+        VerifyPath(quartilesTestSourceFolder);
     }
 
     /// <summary>
@@ -198,9 +208,11 @@ public class DictionaryMerger
 
     public void VerifyPath(string filePath)
     {
-        if (!File.Exists(filePath))
+        if (!Directory.Exists(filePath) && !File.Exists(filePath))
         {
             throw new Exception($"File path does not exist: {filePath}");
         }
     }
+
+    public static void Main(string[] args) { }
 }
