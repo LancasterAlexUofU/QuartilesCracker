@@ -104,6 +104,23 @@ namespace QuartilesTest
         }
 
         [TestMethod]
+        public void ExtractChunks_ExtractQuartiles2024_11_06_ReturnsCorrectList()
+        {
+            var extractor = new QTT("quartiles-2024-11-06.png");
+            extractor.ExtractChunks();
+
+            List<string> expected = new List<string> {
+                "rs", "ena", "pe", "li",
+                "hea", "tor", "ri", "br",
+                "rt", "scra", "jus", "sky",
+                "ia", "ne", "bly", "ter",
+                "tif", "ial", "oken", "adr"
+            };
+
+            CollectionAssert.AreEquivalent(expected, extractor.chunks, GetDifferenceMessage(expected, extractor.chunks));
+        }
+
+        [TestMethod]
         public void ExtractChunks_ExtractQuartiles2025_03_20_ReturnsCorrectList()
         {
             var extractor = new QTT("quartiles-2025-03-20.png");

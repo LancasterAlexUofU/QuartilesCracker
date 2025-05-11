@@ -13,24 +13,27 @@ public class QTT
     private string dataPath;
     private string imagePath;
     private TesseractEngine engine;
-    
+
     public List<string> chunks;
 
     public QTT(string imageName)
     {
         // Go back 3 levels from bin\debug\netX.Y to get the project directory
         string projectRoot = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\"));
-
         string QTTRoot = Path.GetFullPath(Path.Combine(projectRoot, @"..\QuartilesToText"));
-
         string imageFolder = Path.Combine(QTTRoot, "QuartileImages");
-        
-        dataPath = Path.Combine(QTTRoot, "tessdata");
         imagePath = Path.Combine(imageFolder, imageName);
+        dataPath = Path.Combine(QTTRoot, "tessdata");
+        chunks = new List<string>();
 
-        if(!File.Exists(imagePath))
+        if (!File.Exists(imagePath))
         {
             throw new Exception($"Image not found: {imagePath}");
+        }
+
+        if(!Directory.Exists(dataPath))
+        {
+            throw new Exception($"Tesseract data path not found: {dataPath}");
         }
 
         // LSTM engine is a neural network engine and is usually better than the legacy engine
@@ -38,8 +41,6 @@ public class QTT
         // If you change the engine mode back to using legacy, the eng.traineddata will also need to be changed to the correct one
         engine = new TesseractEngine(dataPath, "eng", EngineMode.LstmOnly);
         engine.DefaultPageSegMode = PageSegMode.SingleBlock;
-
-        chunks = new List<string>();
     }
 
     public void ExtractChunks()
@@ -48,7 +49,7 @@ public class QTT
 
         using(engine)
         {
-            
+            //Pix image = LoadHighResImage(imagePath);
             Pix image = Pix.LoadFromFile(imagePath);
             Page page = engine.Process(image);
             chunkText = page.GetText().ToLower();
@@ -77,7 +78,7 @@ public class QTT
 
     public static void Main()
     {
-        string date = "2024-06-22";
+        string date = "2024-11-06";
 
         string imageName = $"quartiles-{date}.png";
 
