@@ -33,7 +33,10 @@ public class QTT
             throw new Exception($"Image not found: {imagePath}");
         }
 
-        engine = new TesseractEngine(dataPath, "eng");
+        // LSTM engine is a neural network engine and is usually better than the legacy engine
+        // Using data from tessdata_best/eng.traineddata (which is specifically for LSTM)
+        // If you change the engine mode back to using legacy, the eng.traineddata will also need to be changed to the correct one
+        engine = new TesseractEngine(dataPath, "eng", EngineMode.LstmOnly);
         engine.DefaultPageSegMode = PageSegMode.SingleBlock;
 
         chunks = new List<string>();
@@ -45,6 +48,7 @@ public class QTT
 
         using(engine)
         {
+            
             Pix image = Pix.LoadFromFile(imagePath);
             Page page = engine.Process(image);
             chunkText = page.GetText().ToLower();
@@ -58,9 +62,27 @@ public class QTT
         }
     }
 
+    public void PrintChunks()
+    {
+        if(chunks.Count != 20)
+        {
+            Console.WriteLine($"Warning!! Expected 20 chunks, but only contained {chunks.Count} chunks.");
+        }
+
+        foreach (string chunk in chunks)
+        {
+            Console.WriteLine(chunk);
+        }
+    }
+
     public static void Main()
     {
-        var extractor = new QTT("quartiles3.png");
+        string date = "2024-06-22";
+
+        string imageName = $"quartiles-{date}.png";
+
+        var extractor = new QTT(imageName);
         extractor.ExtractChunks();
+        extractor.PrintChunks();
     }
 }

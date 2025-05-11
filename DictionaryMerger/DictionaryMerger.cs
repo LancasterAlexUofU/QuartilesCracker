@@ -237,5 +237,11 @@ public class DictionaryMerger
         }
     }
 
-    public static void Main(string[] args) { }
+    public static void Main(string[] args)
+    {
+        var paths = new DictionaryMerger();
+
+        var merger = new DictionaryMerger(paths.dictionaryMergerDictFolder, "spelling", paths.quartilesCrackerDictFolder, "quartiles_dictionary");
+        merger.MergeDictionaries();
+    }
 }
