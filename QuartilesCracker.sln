@@ -13,7 +13,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuartilesToText", "Quartile
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DictionaryUpdater", "DictionaryUpdater\DictionaryUpdater.csproj", "{37B35EA3-F595-4C44-86F0-D8C37E5D45B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuartilesAnswers", "QuartilesAnswers\QuartilesAnswers.csproj", "{F0BCA178-FE2F-4ECA-BAD7-116DE07B1A64}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuartilesAnswers", "QuartilesAnswers\QuartilesAnswers.csproj", "{F0BCA178-FE2F-4ECA-BAD7-116DE07B1A64}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolutionClicker", "SolutionClicker\SolutionClicker.csproj", "{71E297E8-8550-407B-A196-BC37B8AEB84C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chunk", "Chunk\Chunk.csproj", "{921BE2D4-4BF1-4D5D-8C67-D61A9B004731}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +49,14 @@ Global
 		{F0BCA178-FE2F-4ECA-BAD7-116DE07B1A64}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F0BCA178-FE2F-4ECA-BAD7-116DE07B1A64}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F0BCA178-FE2F-4ECA-BAD7-116DE07B1A64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71E297E8-8550-407B-A196-BC37B8AEB84C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71E297E8-8550-407B-A196-BC37B8AEB84C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71E297E8-8550-407B-A196-BC37B8AEB84C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71E297E8-8550-407B-A196-BC37B8AEB84C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{921BE2D4-4BF1-4D5D-8C67-D61A9B004731}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{921BE2D4-4BF1-4D5D-8C67-D61A9B004731}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{921BE2D4-4BF1-4D5D-8C67-D61A9B004731}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{921BE2D4-4BF1-4D5D-8C67-D61A9B004731}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

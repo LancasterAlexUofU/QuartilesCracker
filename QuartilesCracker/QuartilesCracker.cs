@@ -5,10 +5,10 @@ namespace Quartiles;
 public class QuartilesCracker
 {
     // Maximum number of word chunks that can be used to form a word.
-    private int MAX_CHUNKS;
+    public int MAX_CHUNKS;
 
     // Maximum number of lines (rows) in a quartile game
-    private int MAX_LINES;
+    public int MAX_LINES;
 
     // List of words that solve the quartile
     public List<string> results;
@@ -23,7 +23,7 @@ public class QuartilesCracker
     private string currentDictionary;
 
     // Contains valid word - chunk pairings
-    private Dictionary<string, List<string>> wordChunkMapping;
+    public List<KeyValuePair<string, List<string>>> wordChunkMapping;
 
     private string projectRoot = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\.."));
 
@@ -76,7 +76,7 @@ public class QuartilesCracker
             if(dictionary.Contains(permutation))
             {
                 results.Add(permutation);
-                wordChunkMapping.Add(permutation, chunksOutOfList);
+                wordChunkMapping.Add(new KeyValuePair<string, List<string>>(permutation, chunksOutOfList));
             }
 
             return;
@@ -111,7 +111,7 @@ public class QuartilesCracker
         QuartilesCracker solver = new QuartilesCracker();
 
         // Extract image data and store in chunk list
-        var extractor = new QTT("quartiles1.png");
+        var extractor = new QTT("quartiles-unlimited1.png");
         extractor.ExtractChunks();
         solver.VerifyChunks(extractor.chunks);
         solver.chunks = extractor.chunks;
