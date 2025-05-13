@@ -90,10 +90,10 @@ namespace Chunks
         public Chunk(int row, int column, Point centerPos, int maxChunkSize = 4)
         {
             Letters = string.Empty;
+            this.maxChunkSize = maxChunkSize;
             Row = row;
             Column = column;
             CenterPos = centerPos;
-            this.maxChunkSize = maxChunkSize;
         }
 
         /// <summary>

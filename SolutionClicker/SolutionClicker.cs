@@ -2,6 +2,7 @@
 using Chunks;
 using QuartilesToText;
 using Quartiles;
+using System.Drawing.Imaging;
 
 /// <summary>
 /// Clicks on the screen to solve a quartile game
@@ -14,6 +15,11 @@ public class SolutionClicker
     private QTT extractor;
 
     /// <summary>
+    /// Extractor that uses OCR to extract the score
+    /// </summary>
+    private QTT scoreExtractor;
+
+    /// <summary>
     /// Solver that finds the solutions for the quartile
     /// </summary>
     private QuartilesCracker solver;
@@ -22,6 +28,11 @@ public class SolutionClicker
     /// Name of the image to be scanned for letters, including the file extension
     /// </summary>
     private string imageName;
+
+    /// <summary>
+    /// Name of the score image, including the file extension
+    /// </summary>
+    private string scoreName;
 
 
 
@@ -100,7 +111,14 @@ public class SolutionClicker
 
     public static void Main(string[] args)
     {
-        var SolutionClicker = new SolutionClicker("quartiles-2024-06-16.png");
+        SetProcessDPIAware(); // Ensures screen coordinates are actual pixels
+        //Application.EnableVisualStyles();
+        //Application.SetCompatibleTextRenderingDefault(false);
+        //Application.Run(new Form1());   
+
+
+
+        var SolutionClicker = new SolutionClicker("quartiles-unlimited2.png");
         SolutionClicker.PrintMousePostition();
 
         SolutionClicker.RunAutoSolver();
@@ -114,10 +132,13 @@ public class SolutionClicker
     /// <param name="imageName">Image filename in QuartilesImages to scan</param>
     public SolutionClicker(string imageName)
     {
+        this.imageName = imageName;
+        scoreName = "score_image.png";
+
         extractor = new QTT(imageName);
+        scoreExtractor = new QTT(scoreName);
         solver = new QuartilesCracker();
 
-        this.imageName = imageName;
 
         columns = solver.MAX_CHUNKS;
         rows = solver.MAX_LINES;
@@ -125,14 +146,14 @@ public class SolutionClicker
         wordChunks = new List<Chunk>();
 
         // https://www.quartilesgame.org, 100% Vivaldi
-        topLeft = new Point(630, 320);
-        bottomRight = new Point(1060, 550);
+        topLeft = new Point(945, 535);
+        bottomRight = new Point(1590, 880);
 
         score = 0;
-        topLeftScore = new Point(635, 200);
-        bottomRightScore = new Point(660, 235);
+        topLeftScore = new Point(935, 300);
+        bottomRightScore = new Point(1040, 365);
 
-        checkSolution = new Point(1040, 615);
+        checkSolution = new Point(1560, 935);
         closePopup = new Point();
         expertPopupClosed = false;
     }
@@ -288,13 +309,13 @@ public class SolutionClicker
     /// <returns></returns>
     private int GetScore()
     {
-        // Takes a screenshot of the score area and uses OCR to extract the score
-        // For now, just returning 0
+        Cursor.Position = topLeftScore;
+        CaptureScoreScreenshot();
 
         // Wait for animation to complete
         Thread.Sleep(500);
 
-        string scannedScore = string.Empty;
+        string scannedScore = scoreExtractor.ExtractScore();
         int scannedScoreInt;
 
         //int scannedScoreInt = 
@@ -348,6 +369,27 @@ public class SolutionClicker
                 return score;
             }
         }
+    }
+
+    /// <summary>
+    /// Captures a screenshot of the score and saves it as score_image.png in QuartilesImages
+    /// </summary>
+    private void CaptureScoreScreenshot()
+    {
+        int width = bottomRightScore.X - topLeftScore.X;
+        int height = bottomRightScore.Y - topLeftScore.Y;
+
+        using (Bitmap bmp = new Bitmap(width, height))
+        {
+            using (Graphics g = Graphics.FromImage(bmp))
+            {
+                // Uses top left corner of the screen to start capture, draws to bmp starting at 0,0, and captures a rectangle of Size(width, height)
+                g.CopyFromScreen(topLeftScore.X, topLeftScore.Y, 0, 0, new Size(width, height));
+            }
+
+            string imagePath = Path.Combine(extractor.imageFolder, scoreName);
+            bmp.Save(imagePath, ImageFormat.Png);
+        }   
     }
 
     /// <summary>
@@ -520,4 +562,8 @@ public class SolutionClicker
 
     [DllImport("user32.dll", SetLastError = true)]
     static extern void mouse_event(MouseEventFlags dwFlags, uint dx, uint dy, uint dwData, UIntPtr dwExtraInfo);
+
+
+    [System.Runtime.InteropServices.DllImport("user32.dll")]
+    private static extern bool SetProcessDPIAware();
 }

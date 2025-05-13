@@ -11,6 +11,7 @@ public class QTT
     private string regex = $@"\b[a-z]{{1,{MAX_CHUNK_SIZE}}}\b";
 
     private string dataPath;
+    public string imageFolder;
     private string imagePath;
     private TesseractEngine engine;
 
@@ -21,7 +22,7 @@ public class QTT
         // Go back 3 levels from bin\debug\netX.Y to get the project directory
         string projectRoot = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\"));
         string QTTRoot = Path.GetFullPath(Path.Combine(projectRoot, @"..\QuartilesToText"));
-        string imageFolder = Path.Combine(QTTRoot, "QuartileImages");
+        imageFolder = Path.Combine(QTTRoot, "QuartileImages");
         imagePath = Path.Combine(imageFolder, imageName);
         dataPath = Path.Combine(QTTRoot, "tessdata");
         chunks = new List<string>();
@@ -47,13 +48,10 @@ public class QTT
     {
         string chunkText;
 
-        using(engine)
-        {
-            //Pix image = LoadHighResImage(imagePath);
-            Pix image = Pix.LoadFromFile(imagePath);
-            Page page = engine.Process(image);
-            chunkText = page.GetText().ToLower();
-        }
+        Pix image = Pix.LoadFromFile(imagePath);
+        Page page = engine.Process(image);
+        chunkText = page.GetText().ToLower();
+
 
         var matches = Regex.Matches(chunkText, regex);
 
@@ -61,6 +59,21 @@ public class QTT
         {
             chunks.Add(match.Value);
         }
+    }
+
+    public string ExtractScore()
+    {
+        string score;
+
+        Pix image = Pix.LoadFromFile(imagePath);
+
+        // Seperate using statement for page so multiple engines don't try to process the same image
+        using (Page page = engine.Process(image))
+        {
+            score = page.GetText();
+        }
+
+        return score;
     }
 
     public void PrintChunks()
@@ -78,9 +91,11 @@ public class QTT
 
     public static void Main()
     {
-        string date = "2024-11-06";
+        //string date = "2024-11-06";
 
-        string imageName = $"quartiles-{date}.png";
+        //string imageName = $"quartiles-{date}.png";
+
+        string imageName = "quartiles-unlimited2.png";
 
         var extractor = new QTT(imageName);
         extractor.ExtractChunks();
