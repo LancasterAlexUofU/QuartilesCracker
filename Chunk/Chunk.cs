@@ -63,6 +63,22 @@ namespace Chunks
         /// </summary>
         private int maxChunkSize;
 
+        public Chunk(string letters, int row, int column, int maxChunkSize = 4)
+        {
+            Letters = letters;
+            Row = row;
+            Column = column;
+            this.maxChunkSize = maxChunkSize;
+        }
+
+        public Chunk(int row, int column, int maxChunkSize = 4)
+        {
+            Letters = string.Empty;
+            Row = row;
+            Column = column;
+            this.maxChunkSize = maxChunkSize;
+        }
+
         /// <summary>
         /// Constructor for a chunk object
         /// </summary>

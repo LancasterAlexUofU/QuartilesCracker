@@ -1,7 +1,4 @@
-﻿using System.Diagnostics;
-using QuartilesToText;
-
-namespace Quartiles;
+﻿namespace Quartiles;
 public class QuartilesCracker
 {
     // Maximum number of word chunks that can be used to form a word.
@@ -106,26 +103,26 @@ public class QuartilesCracker
 
     public static void Main()
     {
-        var stopwatch = Stopwatch.StartNew();  // Start timing
+        //var stopwatch = Stopwatch.StartNew();  // Start timing
 
-        QuartilesCracker solver = new QuartilesCracker();
+        //QuartilesCracker solver = new QuartilesCracker();
 
-        // Extract image data and store in chunk list
-        var extractor = new QTT("quartiles-unlimited1.png");
-        extractor.ExtractChunks();
-        solver.VerifyChunks(extractor.chunks);
-        solver.chunks = extractor.chunks;
+        //// Extract image data and store in chunk list
+        //var extractor = new QTT("quartiles-unlimited1.png");
+        //extractor.ExtractChunks();
+        //solver.VerifyChunks(extractor.chunks);
+        //solver.chunks = extractor.chunks;
 
-        // Solve Puzzle
-        Console.WriteLine("Cracking!");
-        solver.QuartilesDriver();
+        //// Solve Puzzle
+        //Console.WriteLine("Cracking!");
+        //solver.QuartilesDriver();
 
-        stopwatch.Stop();  // Stop timing
-        Console.WriteLine($"Time taken: {stopwatch.ElapsedMilliseconds} ms");
+        //stopwatch.Stop();  // Stop timing
+        //Console.WriteLine($"Time taken: {stopwatch.ElapsedMilliseconds} ms");
 
-        foreach(var word in solver.results)
-        {
-            Console.WriteLine(word);
-        }
+        //foreach(var word in solver.results)
+        //{
+        //    Console.WriteLine(word);
+        //}
     }
 }
