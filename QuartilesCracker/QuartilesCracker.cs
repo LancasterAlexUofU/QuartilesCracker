@@ -1,69 +1,69 @@
 ﻿namespace Quartiles;
+
+/// <summary>
+/// Class that solves a quartiles game given a list of the letter tiles
+/// </summary>
 public class QuartilesCracker
 {
-    // Maximum number of word chunks that can be used to form a word.
-    public int MAX_CHUNKS;
+    // Gets and sets the maximum number of words chunks that can be used to form a word
+    public int MaxChunks {  get; set; }
 
-    // Maximum number of lines (rows) in a quartile game
-    public int MAX_LINES;
+    // Gets and sets the maximum number of lines (rows) in a quartile game
+    public int MaxLines { get; set; }
 
     // HashSet that contains all words for quick lookup
-    public HashSet<string> dictionary;
-
-    // Current dictionary file name
-    private string currentDictionary;
-
-    // Contains valid word - chunk pairings
-    public List<KeyValuePair<string, List<string>>> wordChunkMapping;
-
-    private string projectRoot = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\.."));
+    private HashSet<string> dictionary;
 
     /// <summary>
-    /// Constructor for QuartilesCracker.
-    ///
-    /// Defaults to the quartiles dictionary with 4 chunks per word and 5 lines.
+    /// Constructor for QuartilesCracker. Defaults to the quartiles dictionary with 4 chunks per word and 5 lines.
     /// </summary>
-    public QuartilesCracker(string currentDictionary = "quartiles_dictionary")
+
+    /// <summary>
+    /// Constructor for QuartilesCracker that initializes the current dictionary
+    /// </summary>
+    /// <param name="currentDictionary">Filename of the dictionary to be used in the Dictionaries debug folder (no file extension)</param>
+    /// <param name="maxChunks">Maximum number of letter chunks that can be used to form a word</param>
+    /// <param name="maxLines">Maximum number of rows in a quartile game</param>
+    public QuartilesCracker(string currentDictionary = "quartiles_dictionary", int maxChunks = 4, int maxLines = 5)
     {
-        MAX_CHUNKS = 4;
-        MAX_LINES = 5;
-        
-        this.currentDictionary = currentDictionary;
+        MaxChunks = maxChunks;
+        MaxLines = maxLines;
+
         string dictionaryFolder = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "Dictionaries"));
         string dictionaryPath = Path.Combine(dictionaryFolder, currentDictionary + ".txt");
 
         dictionary = [.. File.ReadAllLines(dictionaryPath)];
-        wordChunkMapping = [];
     }
 
     /// <summary>
-    /// Generates all permutations from maximum chunk size to 1 which stores valid words in the results list.
+    /// Finds all Quartile solutions from max sized chunk solutions through 1 size chunk solutions
     /// </summary>
-    public List<string> QuartilesDriver(List<string> chunks)
+    /// <param name="chunks">The letters found in a Quartiles game of size rows times columns</param>
+    /// <returns>A tuple, with the first element containing all solutions and the second element containing the mapping for which chunks make up a solution</returns>
+    public (List<string> allSolutions, List<KeyValuePair<string, List<string>>> solutionChunkMapping) QuartileSolver(List<string> chunks)
     {
-        List<string> results = [];
+        VerifyChunks(chunks);
 
-        for(int chunkSize = MAX_CHUNKS; chunkSize > 0; chunkSize--)
+        List<string> allSolutions = [];
+        List<KeyValuePair<string, List<string>>> solutionChunkMapping = [];
+
+        for (int chunkSize = MaxChunks; chunkSize > 0; chunkSize--)
         {
-            List<string> tempResults = GetPermutations([], chunks, [], chunkSize);
-
-            foreach(string tempResult in tempResults)
-            {
-                results.Add(tempResult);
-            }
+            GetPermutations([], chunks, allSolutions, solutionChunkMapping, chunkSize);
         }
 
-        return results;
+        return (allSolutions, solutionChunkMapping);
     }
 
     /// <summary>
-    /// Generates all permutations of the chunks in the list and checks if they are valid words.
-    /// Stores valid words in the results list and their chunk mappings in the wordChunkMapping dictionary.
+    /// Generates all permutations of the chunks in the list and checks if they are valid words
     /// </summary>
     /// <param name="chunksOutOfList">Chunks used in current permutation. Initially empty</param>
     /// <param name="chunksInList">Chunks available to use for permutation. Initially full chunk list</param>
+    /// <param name="solutions">List where solutions are stored within recursive calls. Initially empty</param>
+    /// <param name="solutionChunkMapping">List where solution-chunk mappings are stored within recursive calls. Initially empty/param>
     /// <param name="maxChunks">Maximum amount of chunks to use when permutating</param>
-    public List<string> GetPermutations(List<string> chunksOutOfList, List<string> chunksInList, List<string> results, int maxChunks)
+    protected void GetPermutations(List<string> chunksOutOfList, List<string> chunksInList, List<string> solutions, List<KeyValuePair<string, List<string>>> solutionChunkMapping, int maxChunks)
     {
         if(chunksOutOfList.Count == maxChunks)
         {
@@ -72,60 +72,32 @@ public class QuartilesCracker
 
             if(dictionary.Contains(permutation))
             {
-                results.Add(permutation);
-                wordChunkMapping.Add(new KeyValuePair<string, List<string>>(permutation, chunksOutOfList));
+                solutions.Add(permutation);
+                solutionChunkMapping.Add(new KeyValuePair<string, List<string>>(permutation, [.. chunksOutOfList]));
             }
 
-            return results;
+            return;
         }
 
         foreach(var chunk in chunksInList)
         {
-            var newChunkList = new List<string>(chunksInList);
+            List<string> newChunkList = [.. chunksInList];
             newChunkList.Remove(chunk);
-            var newChunkOut = new List<string>(chunksOutOfList) { chunk };
-            GetPermutations(newChunkOut, newChunkList, results, maxChunks);
+            List<string> newChunkOut = new(chunksOutOfList) { chunk };
+            GetPermutations(newChunkOut, newChunkList, solutions, solutionChunkMapping, maxChunks);
         }
-
-        // Ensure a return statement is present for all code paths
-        return results;
     }
 
     /// <summary>
     /// This method verifies that the chunk list is the correct size.
     /// </summary>
-    /// <param name="chunks">Chunk list generated from image-text extraction</param>
+    /// <param name="chunks">The letters found in a Quartiles game</param>
     /// <exception cref="Exception">Thrown if the size of the list doesn't match board size</exception>
-    public void VerifyChunks(List<string> chunks)
+    private void VerifyChunks(List<string> chunks)
     {
-        if(chunks.Count != MAX_CHUNKS * MAX_LINES)
+        if(chunks.Count != MaxChunks * MaxLines)
         {
             throw new Exception("Chunk list does not match board size!");
         }
-    }
-
-    public static void Main()
-    {
-        //var stopwatch = Stopwatch.StartNew();  // Start timing
-
-        //QuartilesCracker solver = new QuartilesCracker();
-
-        //// Extract image data and store in chunk list
-        //var extractor = new QTT("quartiles-unlimited1.png");
-        //extractor.ExtractChunks();
-        //solver.VerifyChunks(extractor.chunks);
-        //solver.chunks = extractor.chunks;
-
-        //// Solve Puzzle
-        //Console.WriteLine("Cracking!");
-        //solver.QuartilesDriver();
-
-        //stopwatch.Stop();  // Stop timing
-        //Console.WriteLine($"Time taken: {stopwatch.ElapsedMilliseconds} ms");
-
-        //foreach(var word in solver.results)
-        //{
-        //    Console.WriteLine(word);
-        //}
     }
 }
