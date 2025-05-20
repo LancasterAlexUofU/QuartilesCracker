@@ -52,6 +52,8 @@ public class QuartilesCracker
             GetPermutations([], chunks, allSolutions, solutionChunkMapping, chunkSize);
         }
 
+        RemoveDuplicates(allSolutions, solutionChunkMapping);
+
         return (allSolutions, solutionChunkMapping);
     }
 
@@ -99,5 +101,27 @@ public class QuartilesCracker
         {
             throw new Exception("Chunk list does not match board size!");
         }
+    }
+
+    /// <summary>
+    /// Removes duplicate solutions and saves it to the ORIGINAL passed parameter
+    /// </summary>
+    /// <param name="solutions">Solution list to remove duplicates from</param>
+    /// <param name="solutionChunkMapping">Solution mapping list to remove duplicates from</param>
+    private void RemoveDuplicates(List<string> solutions, List<KeyValuePair<string, List<string>>> solutionChunkMapping)
+    {
+        var uniqueSolutions = solutions.Distinct().ToList();
+
+        var uniqueMappings = solutionChunkMapping
+                                .GroupBy(kvp => kvp.Key)
+                                .Select(g => g.First())
+                                .ToList();
+
+        solutions.Clear();
+        solutions.AddRange(uniqueSolutions);
+
+        solutionChunkMapping.Clear();
+        solutionChunkMapping.AddRange(uniqueMappings);
+
     }
 }
