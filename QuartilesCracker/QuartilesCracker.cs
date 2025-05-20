@@ -7,12 +7,6 @@ public class QuartilesCracker
     // Maximum number of lines (rows) in a quartile game
     public int MAX_LINES;
 
-    // List of words that solve the quartile
-    public List<string> results;
-
-    // Quartiles word chunks (i.e. the words like "gi", "eco", "pp")
-    public List<string> chunks;
-
     // HashSet that contains all words for quick lookup
     public HashSet<string> dictionary;
 
@@ -29,31 +23,37 @@ public class QuartilesCracker
     ///
     /// Defaults to the quartiles dictionary with 4 chunks per word and 5 lines.
     /// </summary>
-    public QuartilesCracker()
+    public QuartilesCracker(string currentDictionary = "quartiles_dictionary")
     {
         MAX_CHUNKS = 4;
         MAX_LINES = 5;
-
-        results = [];
-        chunks = [];
         
-        currentDictionary = "quartiles_dictionary";
-        string quartilesDictFolder = Path.GetFullPath(Path.Combine(projectRoot, @"..\QuartilesCracker\Dictionaries"));
-        string path = Path.Combine(quartilesDictFolder, currentDictionary + ".txt");
+        this.currentDictionary = currentDictionary;
+        string dictionaryFolder = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "Dictionaries"));
+        string dictionaryPath = Path.Combine(dictionaryFolder, currentDictionary + ".txt");
 
-        dictionary = new HashSet<string>(File.ReadAllLines(path));
+        dictionary = [.. File.ReadAllLines(dictionaryPath)];
         wordChunkMapping = [];
     }
 
     /// <summary>
     /// Generates all permutations from maximum chunk size to 1 which stores valid words in the results list.
     /// </summary>
-    public void QuartilesDriver()
+    public List<string> QuartilesDriver(List<string> chunks)
     {
+        List<string> results = [];
+
         for(int chunkSize = MAX_CHUNKS; chunkSize > 0; chunkSize--)
         {
-            GetPermutations([], chunks, chunkSize);
+            List<string> tempResults = GetPermutations([], chunks, [], chunkSize);
+
+            foreach(string tempResult in tempResults)
+            {
+                results.Add(tempResult);
+            }
         }
+
+        return results;
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ public class QuartilesCracker
     /// <param name="chunksOutOfList">Chunks used in current permutation. Initially empty</param>
     /// <param name="chunksInList">Chunks available to use for permutation. Initially full chunk list</param>
     /// <param name="maxChunks">Maximum amount of chunks to use when permutating</param>
-    public void GetPermutations(List<string> chunksOutOfList, List<string> chunksInList, int maxChunks)
+    public List<string> GetPermutations(List<string> chunksOutOfList, List<string> chunksInList, List<string> results, int maxChunks)
     {
         if(chunksOutOfList.Count == maxChunks)
         {
@@ -76,7 +76,7 @@ public class QuartilesCracker
                 wordChunkMapping.Add(new KeyValuePair<string, List<string>>(permutation, chunksOutOfList));
             }
 
-            return;
+            return results;
         }
 
         foreach(var chunk in chunksInList)
@@ -84,8 +84,11 @@ public class QuartilesCracker
             var newChunkList = new List<string>(chunksInList);
             newChunkList.Remove(chunk);
             var newChunkOut = new List<string>(chunksOutOfList) { chunk };
-            GetPermutations(newChunkOut, newChunkList, maxChunks);
+            GetPermutations(newChunkOut, newChunkList, results, maxChunks);
         }
+
+        // Ensure a return statement is present for all code paths
+        return results;
     }
 
     /// <summary>

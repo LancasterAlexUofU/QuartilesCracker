@@ -66,17 +66,17 @@ namespace Chunks
         public Chunk(string letters, int row, int column, int maxChunkSize = 4)
         {
             Letters = letters;
+            this.maxChunkSize = maxChunkSize;
             Row = row;
             Column = column;
-            this.maxChunkSize = maxChunkSize;
         }
 
         public Chunk(int row, int column, int maxChunkSize = 4)
         {
             Letters = string.Empty;
+            this.maxChunkSize = maxChunkSize;
             Row = row;
             Column = column;
-            this.maxChunkSize = maxChunkSize;
         }
 
         /// <summary>
@@ -90,10 +90,10 @@ namespace Chunks
         public Chunk(string letters, int row, int column, Point centerPos, int maxChunkSize = 4)
         {
             Letters = letters;
+            this.maxChunkSize = maxChunkSize;
             Row = row;
             Column = column;
             CenterPos = centerPos;
-            this.maxChunkSize = maxChunkSize;
         }
 
         /// <summary>
@@ -133,6 +133,5 @@ namespace Chunks
         {
             Value = Row * maxChunkSize + Column;
         }
-
     }
 }
