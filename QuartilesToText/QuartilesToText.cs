@@ -12,6 +12,7 @@ public class QTT
 
     private string dataPath;
     public string imageFolder;
+    public string chunkFolder;
     private string imagePath;
     private TesseractEngine engine;
 
@@ -23,6 +24,7 @@ public class QTT
         string projectRoot = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\"));
         string QTTRoot = Path.GetFullPath(Path.Combine(projectRoot, @"..\QuartilesToText"));
         imageFolder = Path.Combine(QTTRoot, "QuartileImages");
+        chunkFolder = Path.Combine(QTTRoot, "QuartileChunks");
         imagePath = Path.Combine(imageFolder, imageName);
         dataPath = Path.Combine(QTTRoot, "tessdata");
         chunks = new List<string>();
@@ -89,16 +91,55 @@ public class QTT
         }
     }
 
+    private void WriteChunksToFile(string chunkFilePath)
+    {
+        File.WriteAllLines(chunkFilePath, chunks);
+        File.AppendAllText(chunkFilePath, "!!!UNVERIFIED!!!");
+    }
+
+    public void ScanAllImages()
+    {
+        // Image files need to be in the form of quartiles-YYYY-MM-DD.png
+        string validImageNamePattern = @"quartiles-\d{4}-\d{2}-\d{2}\.png";
+
+        string[] quartileImages = Directory.GetFiles(imageFolder);
+        foreach (string image in quartileImages)
+        {
+            if(Regex.IsMatch(image, validImageNamePattern))
+            {
+                string imageFileName = Path.GetFileName(image);
+                string datePart = imageFileName.Substring("quartiles-".Length, "YYYY-MM-DD".Length);
+                string chunkFileName = $"quartiles-chunk-{datePart}.txt";
+                string chunkFilePath = Path.Combine(chunkFolder, chunkFileName);
+
+                if(!File.Exists(chunkFilePath))
+                {
+                    Console.WriteLine($"Writing to {imageFileName}.\n");
+                    var extractor = new QTT(image);
+                    extractor.ExtractChunks();
+                    extractor.WriteChunksToFile(chunkFilePath);
+                }
+
+                else
+                {
+                    Console.WriteLine($"File {chunkFileName} already exists, skipping\n");
+                }
+            }
+        }
+    }
+
     public static void Main()
     {
         //string date = "2024-11-06";
 
         //string imageName = $"quartiles-{date}.png";
 
-        string imageName = "quartiles-unlimited2.png";
+        string imageName = "quartiles-2024-06-16.png";
 
         var extractor = new QTT(imageName);
-        extractor.ExtractChunks();
-        extractor.PrintChunks();
+
+        extractor.ScanAllImages();
+        //extractor.ExtractChunks();
+        //extractor.PrintChunks();
     }
 }

@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolutionClicker", "Solution
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chunk", "Chunk\Chunk.csproj", "{921BE2D4-4BF1-4D5D-8C67-D61A9B004731}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuartilesRunner", "QuartilesRunner\QuartilesRunner.csproj", "{7F7BC951-4A7D-44FD-8797-82C72F7FC81F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{921BE2D4-4BF1-4D5D-8C67-D61A9B004731}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{921BE2D4-4BF1-4D5D-8C67-D61A9B004731}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{921BE2D4-4BF1-4D5D-8C67-D61A9B004731}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F7BC951-4A7D-44FD-8797-82C72F7FC81F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F7BC951-4A7D-44FD-8797-82C72F7FC81F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F7BC951-4A7D-44FD-8797-82C72F7FC81F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F7BC951-4A7D-44FD-8797-82C72F7FC81F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

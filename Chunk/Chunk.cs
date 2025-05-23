@@ -63,22 +63,6 @@ namespace Chunks
         /// </summary>
         private int maxChunkSize;
 
-        public Chunk(string letters, int row, int column, int maxChunkSize = 4)
-        {
-            Letters = letters;
-            this.maxChunkSize = maxChunkSize;
-            Row = row;
-            Column = column;
-        }
-
-        public Chunk(int row, int column, int maxChunkSize = 4)
-        {
-            Letters = string.Empty;
-            this.maxChunkSize = maxChunkSize;
-            Row = row;
-            Column = column;
-        }
-
         /// <summary>
         /// Constructor for a chunk object
         /// </summary>
@@ -87,13 +71,13 @@ namespace Chunks
         /// <param name="column">Column of the chunk in the quartiles grid, 0-indexed</param>
         /// <param name="centerPos">Center position of the chunk on screen</param>
         /// <param name="maxChunkSize">[Optional parameter] Changes the maximum amount of chunks that can be used to form a solution</param>
-        public Chunk(string letters, int row, int column, Point centerPos, int maxChunkSize = 4)
+        public Chunk(string letters, int row, int column, Point? centerPos = null, int maxChunkSize = 4)
         {
             Letters = letters;
             this.maxChunkSize = maxChunkSize;
             Row = row;
             Column = column;
-            CenterPos = centerPos;
+            CenterPos = centerPos ?? default;
         }
 
         /// <summary>
@@ -102,14 +86,10 @@ namespace Chunks
         /// <param name="row">Row of the chunk in the quartiles grid, 0-indexed</param>
         /// <param name="column">Column of the chunk in the quartiles grid, 0-indexed</param>
         /// <param name="centerPos">Center position of the chunk on screen</param>
-        /// <param name="maxChunkSize">[Optional parameter] Changes the maximum amount of chunks that can be used to form a solution</param>
-        public Chunk(int row, int column, Point centerPos, int maxChunkSize = 4)
+        /// <param name="maxChunkSize">The maximum amount of chunks that can be used to form a solution</param>
+        public Chunk(int row, int column, Point? centerPos = null, int maxChunkSize = 4)
+            : this(string.Empty, row, column, centerPos, maxChunkSize)
         {
-            Letters = string.Empty;
-            this.maxChunkSize = maxChunkSize;
-            Row = row;
-            Column = column;
-            CenterPos = centerPos;
         }
 
         /// <summary>
@@ -119,7 +99,7 @@ namespace Chunks
         /// Rows and Columns setters will also update the value
         /// </para>
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">Position of the chunk in a 1D array</param>
         public void UpdateRowsAndColumns(int value)
         {
             Row = value / maxChunkSize;

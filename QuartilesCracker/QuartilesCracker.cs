@@ -6,33 +6,42 @@
 public class QuartilesCracker
 {
     // Gets and sets the maximum number of words chunks that can be used to form a word
-    public int MaxChunks {  get; set; }
+    public int MaxChunks { get; set; } = 4;
 
     // Gets and sets the maximum number of lines (rows) in a quartile game
-    public int MaxLines { get; set; }
+    public int MaxLines { get; set; } = 5;
+
+    private string _currentDictionary = "quartiles_dictionary";
+
+    // Gets and Sets the filename (without file extension) for the dictionary to search for words and automatically reloads the dictionary if it is changed by the user
+    public string CurrentDictionary
+    {
+        get => _currentDictionary;
+        set
+        {
+            if (_currentDictionary != value)
+            {
+                _currentDictionary = value;
+                LoadDictionary();  // Automatically reload when name changes
+            }
+        }
+    }
+
+    // Path to where the Dictionary Folder exists (inside debug folder)
+    private static readonly string dictionaryFolder = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "Dictionaries"));
+
+    // Path to the Dictionary file
+    private string DictionaryPath => Path.Combine(dictionaryFolder, $"{CurrentDictionary}.txt");
 
     // HashSet that contains all words for quick lookup
-    private HashSet<string> dictionary;
-
-    /// <summary>
-    /// Constructor for QuartilesCracker. Defaults to the quartiles dictionary with 4 chunks per word and 5 lines.
-    /// </summary>
+    private HashSet<string> dictionary = [];
 
     /// <summary>
     /// Constructor for QuartilesCracker that initializes the current dictionary
     /// </summary>
-    /// <param name="currentDictionary">Filename of the dictionary to be used in the Dictionaries debug folder (no file extension)</param>
-    /// <param name="maxChunks">Maximum number of letter chunks that can be used to form a word</param>
-    /// <param name="maxLines">Maximum number of rows in a quartile game</param>
-    public QuartilesCracker(string currentDictionary = "quartiles_dictionary", int maxChunks = 4, int maxLines = 5)
+    public QuartilesCracker()
     {
-        MaxChunks = maxChunks;
-        MaxLines = maxLines;
-
-        string dictionaryFolder = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "Dictionaries"));
-        string dictionaryPath = Path.Combine(dictionaryFolder, currentDictionary + ".txt");
-
-        dictionary = [.. File.ReadAllLines(dictionaryPath)];
+        LoadDictionary();
     }
 
     /// <summary>
@@ -53,7 +62,6 @@ public class QuartilesCracker
         }
 
         RemoveDuplicates(allSolutions, solutionChunkMapping);
-
         return (allSolutions, solutionChunkMapping);
     }
 
@@ -103,6 +111,14 @@ public class QuartilesCracker
         }
     }
 
+    private void VerifyDictionary()
+    {
+        if(!File.Exists(DictionaryPath))
+        {
+            throw new FileNotFoundException($"Dictionary file not found: {DictionaryPath}");
+        }
+    }
+
     /// <summary>
     /// Removes duplicate solutions and saves it to the ORIGINAL passed parameter
     /// </summary>
@@ -122,6 +138,11 @@ public class QuartilesCracker
 
         solutionChunkMapping.Clear();
         solutionChunkMapping.AddRange(uniqueMappings);
+    }
 
+    private void LoadDictionary()
+    {
+        VerifyDictionary();
+        dictionary = [.. File.ReadAllLines(DictionaryPath)];
     }
 }
