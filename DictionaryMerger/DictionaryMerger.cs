@@ -1,7 +1,7 @@
 ﻿using System.Text.RegularExpressions;
+using Paths;
 
 namespace Merger;
-
 /// <summary>
 /// This program merges two dictionaries by adding (or removing) words from the source dictionary to the destination dictionary.
 /// 
@@ -16,113 +16,93 @@ namespace Merger;
 /// </summary>
 public class DictionaryMerger
 {
+    // Backing fields
+    private string _sourcePath;
+    private string _destinationPath;
+
     /// <summary>
-    /// Path to where the source dictionary is saved
+    /// Gets and sets the path to where the source dictionary is saved. Verifies that the path is valid before setting.
     /// 
     /// <para>
     /// This is not the folder where the source dictionary is located, but the path to the file itself.
     /// </para>
     /// </summary>
-    public string sourcePath;
+    public string SourcePath
+    {
+        get => _sourcePath;
+        private set
+        {
+            paths.VerifyFile(value);
+            _sourcePath = value;
+        }
+    }
 
     /// <summary>
-    /// Path to where the destination dictionary is saved
+    /// Gets and sets the path to where the destination dictionary is saved. Verifies that the path is valid before setting.
     /// 
     /// <para>
     /// This is not the folder where the destination dictionary is located, but the path to the file itself.
     /// </para>
     /// </summary>
-    public string destinationPath;
-
-    /// <summary>
-    /// Boolean to determine whether to add or remove words from the destination dictionary
-    /// </summary>
-    public bool addToDictionary;
-
-    /// <summary>
-    /// Holds the path to the current project root.
-    /// 
-    /// <para>
-    /// Goes back 3 levels from bin\debug\netX.Y to get to project folder
-    /// </para>
-    /// </summary>
-    public string projectRoot = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\.."));
-
-    // Common paths
-    public string dictionaryMergerDictFolder;
-    public string dictionaryUpdaterListsFolder;
-    public string quartilesCrackerDictFolder;
-    public string quartilesTestDictFolder;
-    public string quartilesTestDictCopyFolder;
-    public string quartilesTestSourceFolder;
-    public string quartilesTestListsFolder;
-    public string quartilesTestListsCopyFolder;
-
-    public DictionaryMerger()
-    {
-        InitializeCommonFolderPaths();
+    public string DestinationPath
+    { 
+        get => _destinationPath; 
+        private set
+        {
+            paths.VerifyFile(value);
+            _destinationPath = value;
+        }
     }
 
+    /// <summary>
+    /// Gets and sets a boolean to determine whether to add or remove words from the destination dictionary. True adds and false removes.
+    /// </summary>
+    public bool addToDictionary { get; set; }
+
+    // Contains common paths
+    private QuartilePaths paths = new QuartilePaths(libraryUse: false);
+
+    /// <summary>
+    /// Default constructor for DictionaryMerger
+    /// </summary>
+    public DictionaryMerger() { }
+
+    /// <summary>
+    /// Constructor that takes in a destination dictionary path
+    /// </summary>
+    /// <param name="dictionaryPath">Path to dictionary to be modified</param>
+    /// <param name="addToDictionary">Adds to dictionary if true, removes if false</param>
     public DictionaryMerger(string dictionaryPath, bool addToDictionary = true)
     {
-        InitializeCommonFolderPaths();
-
-        destinationPath = dictionaryPath;
+        DestinationPath = dictionaryPath;
         this.addToDictionary = addToDictionary;
-
-        VerifyPath(destinationPath);
-    }
-
-    public DictionaryMerger(string destinationFolder, string dictionaryName, bool addToDictionary = true)
-    {
-        InitializeCommonFolderPaths();
-
-        destinationPath = Path.Combine(destinationFolder, dictionaryName + ".txt");
-        this.addToDictionary = addToDictionary;
-
-        VerifyPath(destinationPath);
-    }
-
-    public DictionaryMerger(string sourceFolder, string sourceName, string destinationFolder, string destinationName, bool addToDictionary = true)
-    {
-        InitializeCommonFolderPaths();
-
-        sourcePath = Path.Combine(sourceFolder, sourceName + ".txt");
-        destinationPath = Path.Combine(destinationFolder, destinationName + ".txt");
-        this.addToDictionary = addToDictionary;
-
-        VerifyPath(sourcePath);
-        VerifyPath(destinationPath);
     }
 
     /// <summary>
-    /// Initializes common source and destination folder paths for the dictionaries
+    /// Constructor that takes in the destination folder where a dictionary is located, along with the dictionary filename located inside the folder
     /// </summary>
-    private void InitializeCommonFolderPaths()
+    /// <param name="destinationFolder">Path to the folder containing the dictionary to be modified</param>
+    /// <param name="dictionaryName">Filename of the dictionary without file extensions</param>
+    /// <param name="addToDictionary">Adds to dictionary if true, removes if false</param>
+    public DictionaryMerger(string destinationFolder, string dictionaryName, bool addToDictionary = true)
     {
-        // Ensure GetFullPath for ../ to work correctly
-        var dictionaryMergerRoot = Path.GetFullPath(Path.Combine(projectRoot, @"..\DictionaryMerger"));
-        var dictionaryUpdaterRoot = Path.GetFullPath(Path.Combine(projectRoot, @"..\DictionaryUpdater"));
-        var quartilesCrackerRoot = Path.GetFullPath(Path.Combine(projectRoot, @"..\QuartilesCracker"));
-        var quartilesTestRoot = Path.GetFullPath(Path.Combine(projectRoot, @"..\QuartilesTest"));
+        DestinationPath = Path.Combine(destinationFolder, dictionaryName + ".txt");
+        this.addToDictionary = addToDictionary;
+    }
 
-        dictionaryMergerDictFolder = Path.Combine(dictionaryMergerRoot, "Dictionaries");
-        dictionaryUpdaterListsFolder = Path.Combine(dictionaryUpdaterRoot, "Lists");
-        quartilesCrackerDictFolder = Path.Combine(quartilesCrackerRoot, "Dictionaries");
-        quartilesTestDictFolder = Path.Combine(quartilesTestRoot, "TestDictionary");
-        quartilesTestDictCopyFolder = Path.Combine(quartilesTestRoot, "TestDictionaryCopy");
-        quartilesTestSourceFolder = Path.Combine(quartilesTestRoot, "TestSource");
-        quartilesTestListsFolder = Path.Combine(quartilesTestRoot, "TestLists");
-        quartilesTestListsCopyFolder = Path.Combine(quartilesTestRoot, "TestListsCopy");
-
-        VerifyPath(dictionaryMergerDictFolder);
-        VerifyPath(dictionaryUpdaterListsFolder);
-        VerifyPath(quartilesCrackerDictFolder);
-        VerifyPath(quartilesTestDictFolder);
-        VerifyPath(quartilesTestDictCopyFolder);
-        VerifyPath(quartilesTestSourceFolder);
-        VerifyPath(quartilesTestListsFolder);
-        VerifyPath(quartilesTestListsCopyFolder);
+    /// <summary>
+    /// Constructor that takes in a source folder, where a dictionary to be read is located along with its filename, and a destination folder, where a dictionary to be written to is located along with its filename.
+    /// </summary>
+    /// <param name="sourceFolder">Path to the folder containing the dictionary to be read from</param>
+    /// <param name="sourceName">Filename of the source dictionary without file extensions</param>
+    /// <param name="destinationFolder">Path to the folder containing the dictionary to be modified</param>
+    /// <param name="destinationName">Filename of the dictionary without file extensions</param>
+    /// <param name="addToDictionary">Adds to dictionary if true, removes if false</param>
+    public DictionaryMerger(string sourceFolder, string sourceName, string destinationFolder, string destinationName, bool addToDictionary = true)
+    {
+        SourcePath = Path.Combine(sourceFolder, sourceName + ".txt");
+        DestinationPath = Path.Combine(destinationFolder, destinationName + ".txt");
+        this.addToDictionary = addToDictionary;
     }
 
     /// <summary>
@@ -130,9 +110,12 @@ public class DictionaryMerger
     /// </summary>
     public void MergeDictionaries()
     {
-        VerifyPath(sourcePath);
+        if (SourcePath == null)
+        {
+            throw new FileNotFoundException("Cannot merge without source dictionary. Please use a DictionaryMerger constructor that takes in a source file or use a different method if you are not using a source file.");
+        }
 
-        var sourceWords = new HashSet<string>(File.ReadAllLines(sourcePath));
+        var sourceWords = new HashSet<string>(File.ReadAllLines(SourcePath));
         MergeWithDestination(sourceWords, addToDictionary);
     }
 
@@ -164,7 +147,7 @@ public class DictionaryMerger
     {
         try
         {
-            var destinationWords = new HashSet<string>(File.ReadAllLines(destinationPath));
+            var destinationWords = new HashSet<string>(File.ReadAllLines(DestinationPath));
             var safeSourceWords = FilterValidWords(sourceWords);
 
             // Merge both dictionaries — new words will be added at the end of destinationWords
@@ -180,7 +163,7 @@ public class DictionaryMerger
 
             // Sorts alphabetically and writes back to destination dictionary — source remains the same
             var sortedWords = destinationWords.OrderBy(word => word).ToList();
-            WriteAllLines(destinationPath, sortedWords);
+            WriteAllLines(DestinationPath, sortedWords);
         }
 
         catch (Exception ex)
@@ -211,14 +194,11 @@ public class DictionaryMerger
         return result;
     }
 
-    public void VerifyPath(string filePath)
-    {
-        if (!Directory.Exists(filePath) && !File.Exists(filePath))
-        {
-            throw new Exception($"File path does not exist: {filePath}");
-        }
-    }
-
+    /// <summary>
+    /// Writes all words line by line to the destination path, and importantly, has no extra newline at the end
+    /// </summary>
+    /// <param name="destinationPath">Dictionary path to be written to</param>
+    /// <param name="words">Words to be written</param>
     private void WriteAllLines(string destinationPath, List<string> words)
     {
         using var writer = new StreamWriter(destinationPath);
@@ -235,13 +215,5 @@ public class DictionaryMerger
                 writer.Write(words.ElementAt(i)); // no newline
             }
         }
-    }
-
-    public static void Main(string[] args)
-    {
-        var paths = new DictionaryMerger();
-
-        var merger = new DictionaryMerger(paths.dictionaryMergerDictFolder, "spelling", paths.quartilesCrackerDictFolder, "quartiles_dictionary");
-        merger.MergeDictionaries();
     }
 }

@@ -14,10 +14,10 @@
     <None Update="Dictionaries\oriList.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Dictionaries\quartiles_dictionary.txt">
+    <None Update="MasterDictionaries\quartiles_dictionary.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Dictionaries\quartiles_dictionary_updated.txt">
+    <None Update="MasterDictionaries\quartiles_dictionary_updated.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Dictionaries\words_alpha.txt">
