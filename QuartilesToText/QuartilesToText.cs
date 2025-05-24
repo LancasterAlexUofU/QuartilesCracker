@@ -4,13 +4,19 @@ using Paths;
 
 namespace QuartilesToText;
 
-public class QTT
+/// <summary>
+/// Library that extract text from quartile games images
+/// </summary>
+public class QuartilesOCR : IDisposable
 {
-    private QuartilePaths paths = new QuartilePaths(filesToBeModified: false);
+    private QuartilePaths paths;
     private TesseractEngine engine;
+    private bool disposed = false;
 
     private int _minChunkSize = 2;
     private int _maxChunkSize = 5;
+
+    private string _imageName;
 
     /// <summary>
     /// Gets and sets the minimum character size a chunk can be
@@ -60,13 +66,62 @@ public class QTT
         }
     }
 
-    public string ImageName { get; set; }
+    /// <summary>
+    /// Gets and sets the file name of the image to scan. File name MUST include the file extension
+    /// </summary>
+    public string ImageName
+    {
+        get => _imageName;
+        set
+        {
+            if(!Path.HasExtension(value))
+            {
+                throw new Exception($"Image name {value} has no file extension.");
+            }
 
-    public string ImagePath { get => Path.Combine(paths.QuartilesToTextImagesFolder, ImageName); set { } }
+            _imageName = value;
+        }
+    }
 
-    public QTT(string imageName)
+    /// <summary>
+    /// Gets and sets the path of the image to scan.
+    /// </summary>
+    public string ImagePath
+    {
+        // Better practice to set ImageName and get ImagePath rather than set and get ImagePath
+        get => Path.Combine(paths.QuartilesToTextImagesFolder, ImageName);
+        set
+        {
+            paths.VerifyFile(value);
+
+            try
+            {
+                paths.VerifyFileName(value, ImageName);
+            }
+
+            catch
+            {
+                Console.WriteLine("Warning! Image path has a different file name than image name. Setting image name equal to image path's file name.");
+                ImageName = Path.GetFileName(value);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Default constructor for QuartilesOCR. Important: need to set ImageName before running extractor
+    /// </summary>
+    /// <param name="filesToBeModified">If files are modified, set this to true</param>
+    public QuartilesOCR(bool filesToBeModified = false) : this(imageName: ".png", filesToBeModified) { }
+
+    /// <summary>
+    /// Constructor that sets an image name for scanning
+    /// </summary>
+    /// <param name="imageName">File name of the image to be scanned, including file extension</param>
+    /// <param name="filesToBeModified">If files are modified, set this to true</param>
+    public QuartilesOCR(string imageName, bool filesToBeModified = false)
     {
         ImageName = imageName;
+        paths = new QuartilePaths(filesToBeModified);
 
         // LSTM engine is a neural network engine and is usually better than the legacy engine
         // Using data from tessdata_best/eng.traineddata (which is specifically for LSTM)
@@ -75,6 +130,10 @@ public class QTT
         engine.DefaultPageSegMode = PageSegMode.SingleBlock;
     }
 
+    /// <summary>
+    /// Extracts chunks from a Quartiles game image. Note: Scans be inaccurate, especially with 'i's and 'l's. Always verify
+    /// </summary>
+    /// <returns>A list of chunks found in the image</returns>
     public List<string> ExtractChunks()
     {
         string chunkText;
@@ -97,6 +156,10 @@ public class QTT
         return chunks;
     }
 
+    /// <summary>
+    /// Given an image of a score number, extracts the score
+    /// </summary>
+    /// <returns>A string of the scanned score</returns>
     public string ExtractScore()
     {
         string score;
@@ -110,5 +173,29 @@ public class QTT
         }
 
         return score;
+    }
+
+    // Engine Disposal - Use a using statement for an extractor for proper disposal
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposed)
+        {
+            if (disposing)
+            {
+                engine?.Dispose();
+            }
+
+            disposed = true;
+        }
+    }
+    ~QuartilesOCR()
+    {
+        Dispose(false);
     }
 }

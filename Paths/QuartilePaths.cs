@@ -6,7 +6,7 @@
     public class QuartilePaths
     {
         // Backing fields
-        private string _chunkExtractorRoot;
+        private string _chunkWriterRoot;
         private string _chunkRoot;
         private string _dictionaryMergerRoot;
         private string _dictionaryUpdaterRoot;
@@ -17,7 +17,7 @@
         private string _quartilesToTextRoot;
         private string _solutionClickerRoot;
 
-        private string _chunkExtractorChunkFolder;
+        private string _chunkWriterChunkFolder;
         private string _dictionaryMergerDictFolder;
         private string _dictionaryUpdaterListsFolder;
         private string _quartilesAnswersFolder;
@@ -48,7 +48,7 @@
         /// <summary>
         /// Path for the ChunkExtractor class
         /// </summary>
-        public string ChunkExtractorRoot { get { VerifyDirectory(_chunkExtractorRoot); return _chunkExtractorRoot; } private set { _chunkExtractorRoot = value; } }
+        public string ChunkWriterRoot { get { VerifyDirectory(_chunkWriterRoot); return _chunkWriterRoot; } private set { _chunkWriterRoot = value; } }
 
         /// <summary>
         /// Path for the Chunk library
@@ -102,7 +102,7 @@
         /// <summary>
         /// List of Quartile games as their "chunk" formation. Files are in the form "quartiles-chunk-YYYY-MM-DD.png"
         /// </summary>
-        public string ChunkExtractorChunkFolder { get { VerifyDirectory(_chunkExtractorChunkFolder); return _chunkExtractorChunkFolder; } private set { _chunkExtractorChunkFolder = value; } }
+        public string ChunkWriterChunkFolder { get { VerifyDirectory(_chunkWriterChunkFolder); return _chunkWriterChunkFolder; } private set { _chunkWriterChunkFolder = value; } }
 
         /// <summary>
         /// Dictionary folder that contains a variety of different dictionaries
@@ -181,7 +181,7 @@
         {
             // If adding a new folder, make sure to add to both the BuildRoot and the local root
 
-            ChunkExtractorRoot = Path.GetFullPath(Path.Combine(SolutionRoot, "ChunkExtractor"));
+            ChunkWriterRoot = Path.GetFullPath(Path.Combine(SolutionRoot, "ChunkWriter"));
             ChunkRoot = Path.GetFullPath(Path.Combine(SolutionRoot, "Chunk"));
             DictionaryMergerRoot = Path.GetFullPath(Path.Combine(SolutionRoot, "DictionaryMerger"));
             DictionaryUpdaterRoot = Path.GetFullPath(Path.Combine(SolutionRoot, "DictionaryUpdater"));
@@ -194,7 +194,7 @@
 
             if (!filesToBeModified)
             {
-                ChunkExtractorChunkFolder = Path.Combine(BuildRoot, "QuartileChunks");
+                ChunkWriterChunkFolder = Path.Combine(BuildRoot, "QuartileChunks");
                 DictionaryMergerDictFolder = Path.Combine(BuildRoot, "Dictionaries");
                 DictionaryUpdaterListsFolder = Path.Combine(BuildRoot, "Lists");
                 QuartilesAnswersFolder = Path.Combine(BuildRoot, "QuartilesAnswers");
@@ -211,7 +211,7 @@
 
             else
             {
-                ChunkExtractorChunkFolder = Path.Combine(ChunkExtractorRoot, "QuartileChunks");
+                ChunkWriterChunkFolder = Path.Combine(ChunkWriterRoot, "QuartileChunks");
                 DictionaryMergerDictFolder = Path.Combine(DictionaryMergerRoot, "Dictionaries");
                 DictionaryUpdaterListsFolder = Path.Combine(DictionaryUpdaterRoot, "Lists");
                 QuartilesAnswersFolder = Path.Combine(QuartilesAnswersRoot, "QuartilesAnswers");
@@ -250,6 +250,21 @@
             if (!Directory.Exists(directoryPath))
             {
                 throw new DirectoryNotFoundException($"Directory path does not exist: {directoryPath}");
+            }
+        }
+
+        /// <summary>
+        /// Given a filePath and fileName, ensures the file path contains the file name (including file extension)
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="fileName"></param>
+        public void VerifyFileName(string filePath, string fileName)
+        {
+            string filePathFileName = Path.GetFileName(filePath);
+
+            if (filePathFileName != fileName)
+            {
+                throw new Exception($"File path contained file name {filePathFileName} instead of {fileName}");
             }
         }
     }

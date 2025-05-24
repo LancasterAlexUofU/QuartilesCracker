@@ -2,6 +2,7 @@
 using Chunks;
 using QuartilesToText;
 using Quartiles;
+using Paths;
 using System.Drawing.Imaging;
 
 /// <summary>
@@ -12,12 +13,12 @@ public class SolutionClicker
     /// <summary>
     /// Extractor that uses OCR to extract the letters from the quartiles game
     /// </summary>
-    private QTT extractor;
+    private QuartilesOCR extractor;
 
     /// <summary>
     /// Extractor that uses OCR to extract the score
     /// </summary>
-    private QTT scoreExtractor;
+    private QuartilesOCR scoreExtractor;
 
     /// <summary>
     /// Solver that finds the solutions for the quartile
@@ -109,6 +110,11 @@ public class SolutionClicker
     /// </summary>
     private bool perfectPopupClosed;
 
+    private List<string> chunks = [];
+    private List<string> solutions = [];
+    private List<KeyValuePair<string, List<string>>> solutionChunkMapping = [];
+    private QuartilePaths paths = new QuartilePaths(filesToBeModified: true);
+
     public static void Main(string[] args)
     {
         SetProcessDPIAware(); // Ensures screen coordinates are actual pixels
@@ -135,13 +141,13 @@ public class SolutionClicker
         this.imageName = imageName;
         scoreName = "score_image.png";
 
-        extractor = new QTT(imageName);
-        scoreExtractor = new QTT(scoreName);
+        extractor = new QuartilesOCR(imageName);
+        scoreExtractor = new QuartilesOCR(scoreName);
         solver = new QuartilesCracker();
 
 
-        columns = solver.MAX_CHUNKS;
-        rows = solver.MAX_LINES;
+        columns = solver.MaxChunks;
+        rows = solver.MaxLines;
         lastUnoccupiedRowIndex = rows - 1;
         wordChunks = new List<Chunk>();
 
@@ -206,21 +212,20 @@ public class SolutionClicker
     /// </summary>
     private void SetChunksLetters()
     {
-        extractor.ExtractChunks();
+        var chunks = extractor.ExtractChunks();
 
         for(int i = 0; i < wordChunks.Count; i++)
         {
-            wordChunks[i].Letters = extractor.chunks[i];
+            wordChunks[i].Letters = chunks[i];
         }
     }
 
     /// <summary>
-    /// Finds solutions to quartile game, stored in solver.results
+    /// Finds solutions to quartile game
     /// </summary>
     private void SolveQuartile()
     {
-        solver.chunks = extractor.chunks;
-        solver.QuartilesDriver();
+        (solutions, solutionChunkMapping) = solver.QuartileSolver(chunks);
     }
 
     /// <summary>
@@ -387,7 +392,7 @@ public class SolutionClicker
                 g.CopyFromScreen(topLeftScore.X, topLeftScore.Y, 0, 0, new Size(width, height));
             }
 
-            string imagePath = Path.Combine(extractor.imageFolder, scoreName);
+            string imagePath = Path.Combine(paths.QuartilesToTextImagesFolder, scoreName);
             bmp.Save(imagePath, ImageFormat.Png);
         }   
     }
@@ -417,11 +422,11 @@ public class SolutionClicker
         // Keeps track of how many solutions have been solved using the maximum amount of chunks
         int maxSolutionsSolved = 0;
 
-        foreach (var kvp in solver.wordChunkMapping)
+        foreach (var kvp in solutionChunkMapping)
         {
             List<string> chunks = kvp.Value;
 
-            if (chunks.Count == solver.MAX_CHUNKS)
+            if (chunks.Count == solver.MaxChunks)
             {
                 ClickOnChunks(chunks);
                 ClickCheckSolution();
@@ -439,9 +444,9 @@ public class SolutionClicker
                 }
             }
 
-            else if (chunks.Count < solver.MAX_CHUNKS)
+            else if (chunks.Count < solver.MaxChunks)
             {
-                Console.WriteLine($"Warning! Could not find all solutions for chunk size {solver.MAX_CHUNKS}. Found {maxSolutionsSolved} solutions.");
+                Console.WriteLine($"Warning! Could not find all solutions for chunk size {solver.MaxChunks}. Found {maxSolutionsSolved} solutions.");
                 break;
             }
         }
@@ -454,9 +459,9 @@ public class SolutionClicker
     {
         int startIndex = GetFirstNonMaxChunkSizeIndex();
 
-        for (int i = startIndex; i < solver.wordChunkMapping.Count; i++)
+        for (int i = startIndex; i < solutionChunkMapping.Count; i++)
         {
-            var kvp = solver.wordChunkMapping[i];
+            var kvp = solutionChunkMapping[i];
             List<string> chunks = kvp.Value;
             ClickOnChunks(chunks);
             ClickCheckSolution();
@@ -473,18 +478,18 @@ public class SolutionClicker
     /// <returns>The first index of a solution that uses less than max chunk size</returns>
     private int GetFirstNonMaxChunkSizeIndex()
     {
-        foreach (var kvp in solver.wordChunkMapping)
+        foreach (var kvp in solutionChunkMapping)
         {
             List<string> chunks = kvp.Value;
 
-            if (chunks.Count < solver.MAX_CHUNKS)
+            if (chunks.Count < solver.MaxChunks)
             {
-                return solver.wordChunkMapping.IndexOf(kvp);
+                return solutionChunkMapping.IndexOf(kvp);
             }
         }
 
-        Console.WriteLine($"Warning! Could not find any solutions less than chunk size {solver.MAX_CHUNKS}.");
-        return solver.wordChunkMapping.Count - 1;
+        Console.WriteLine($"Warning! Could not find any solutions less than chunk size {solver.MaxChunks}.");
+        return solutionChunkMapping.Count - 1;
     }
 
     /// <summary>

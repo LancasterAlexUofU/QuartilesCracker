@@ -10,6 +10,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Chunk\Chunk.csproj" />
+	  <ProjectReference Include="..\Paths\Paths.csproj" />
 	  <ProjectReference Include="..\QuartilesCracker\QuartilesCracker.csproj" />
 	  <ProjectReference Include="..\QuartilesToText\QuartilesToText.csproj" />
 	</ItemGroup>
