@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DictionaryMerger\DictionaryMerger.csproj" />
+    <ProjectReference Include="..\Paths\Paths.csproj" />
   </ItemGroup>
 
 </Project>

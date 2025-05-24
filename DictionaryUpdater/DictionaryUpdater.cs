@@ -1,74 +1,102 @@
 ﻿using Merger;
+using Paths;
 
 namespace Updater;
 
+/// <summary>
+/// Library for updating dictionaries, as well as known valid and invalid word lists, used in the QuartilesCracker application.
+/// </summary>
 public class DictionaryUpdater
 {
-    /// <summary>
-    /// Path to the quartiles cracker dictionaries folder
-    /// </summary>
-    private string dictionaryFolder;
+    // Contains common paths
+    private QuartilePaths paths = new QuartilePaths();
+
+    // Backing fields
+    private string _dictionaryFolder;
+    private string _validWordsPath;
+    private string _invalidWordsPath;
 
     /// <summary>
-    /// Path to the folder that contains the known words and invalid words lists
+    /// Gets and sets a path to a folder containing the dictionaries to be updated. Verifies the directory exists before setting.
     /// </summary>
-    private string listsFolder;
+    public string DictionaryFolder 
+    { 
+        get => _dictionaryFolder; 
+        set
+        {
+            paths.VerifyDirectory(_dictionaryFolder);
+            _dictionaryFolder = value;
+        }
+    }
 
     /// <summary>
-    /// Path to the known words list which contains all known words for quartiles
+    /// Gets and sets a path to the valid words list which contains all known valid words for quartiles. Verifies the file exists before setting.
     /// </summary>
-    public string knownWordsPath;
-
-    public string knownWordsName = "known_valid_words";
+    public string ValidWordsPath
+    {
+        get => _validWordsPath;
+        set
+        {
+            paths.VerifyFile(value);
+            _validWordsPath = value;
+        } 
+    }
 
     /// <summary>
-    /// Path to the invalid words list which contains all known invalid words for quartiles
+    /// Gets and sets a path to the invalid words list which contains all known invalid words for quartiles. Verifies the file exists before setting.
     /// </summary>
-    public string invalidWordsPath;
+    public string InvalidWordsPath
+    {
+        get => _invalidWordsPath;
 
-    public string invalidWordsName = "known_invalid_words";
+        set
+        {
+            paths.VerifyFile(value);
+            _invalidWordsPath = value;
+        }
+    }
 
+    /// <summary>
+    /// Filename of the list containing known valid words without the file extension
+    /// </summary>
+    public string ValidWordsName { get; set; } = "known_valid_words";
 
+    /// <summary>
+    /// Filename of the list containing known invalid words without the file extension
+    /// </summary>
+    public string InvalidWordsName {  get; set; } = "known_invalid_words";
+
+    /// <summary>
+    /// Default constructor that sets DictionaryFolder to the QuartilesCracker MasterDictionary Folder
+    /// </summary>
     public DictionaryUpdater()
     {
-        var merger = new DictionaryMerger();
-        listsFolder = merger.dictionaryUpdaterListsFolder;
-        dictionaryFolder = merger.quartilesCrackerDictFolder;
-
-        knownWordsPath = Path.Combine(listsFolder, knownWordsName + ".txt");
-        invalidWordsPath = Path.Combine(listsFolder, invalidWordsName + ".txt");
-
-        merger.VerifyPath(knownWordsPath);
-        merger.VerifyPath(invalidWordsPath);
+        DictionaryFolder = paths.QuartilesCrackerDictFolder;
+        ValidWordsPath = Path.Combine(paths.DictionaryUpdaterListsFolder, ValidWordsName + ".txt");
+        InvalidWordsPath = Path.Combine(paths.DictionaryUpdaterListsFolder, InvalidWordsName + ".txt");
     }
 
+    /// <summary>
+    /// Constructor that sets the DictionaryFolder to a given dictionary folder path
+    /// </summary>
+    /// <param name="dictionaryFolder">Path to a folder containing dictionaries to be updated</param>
     public DictionaryUpdater(string dictionaryFolder)
     {
-        var merger = new DictionaryMerger();
-        listsFolder = merger.dictionaryUpdaterListsFolder;
-        this.dictionaryFolder = dictionaryFolder;
-
-        knownWordsPath = Path.Combine(listsFolder, knownWordsName + ".txt");
-        invalidWordsPath = Path.Combine(listsFolder, invalidWordsName + ".txt");
-
-        merger.VerifyPath(knownWordsPath);
-        merger.VerifyPath(invalidWordsPath);
-        merger.VerifyPath(dictionaryFolder);
+        DictionaryFolder = dictionaryFolder;
+        ValidWordsPath = Path.Combine(paths.DictionaryUpdaterListsFolder, ValidWordsName + ".txt");
+        InvalidWordsPath = Path.Combine(paths.DictionaryUpdaterListsFolder, InvalidWordsName + ".txt");
     }
 
+    /// <summary>
+    /// Constructor that sets the known valid and invalid word lists path as well as the DictionaryFolder path
+    /// </summary>
+    /// <param name="listsFolder">Path to a folder containing the known valid and invalid word lists</param>
+    /// <param name="dictionaryFolder">Path to a folder containing dictionaries to be updated</param>
     public DictionaryUpdater(string listsFolder, string dictionaryFolder)
     {
-        var merger = new DictionaryMerger();
-        this.listsFolder = listsFolder;
-        this.dictionaryFolder = dictionaryFolder;
-
-        knownWordsPath = Path.Combine(listsFolder, knownWordsName + ".txt");
-        invalidWordsPath = Path.Combine(listsFolder, invalidWordsName + ".txt");
-
-        merger.VerifyPath(knownWordsPath);
-        merger.VerifyPath(invalidWordsPath);
-        merger.VerifyPath(listsFolder);
-        merger.VerifyPath(dictionaryFolder);
+        DictionaryFolder = dictionaryFolder;
+        ValidWordsPath = Path.Combine(listsFolder, ValidWordsName + ".txt");
+        InvalidWordsPath = Path.Combine(listsFolder, InvalidWordsName + ".txt");
     }
 
     /// <summary>
@@ -82,7 +110,7 @@ public class DictionaryUpdater
 
         foreach (string dictionary in dictionaries)
         {
-            merger = new DictionaryMerger(dictionaryFolder, dictionary);
+            merger = new DictionaryMerger(DictionaryFolder, dictionary);
             merger.MergeDictionaries(word);
         }
     }
@@ -98,7 +126,7 @@ public class DictionaryUpdater
 
         foreach (string dictionary in dictionaries)
         {
-            merger = new DictionaryMerger(dictionaryFolder, dictionary);
+            merger = new DictionaryMerger(DictionaryFolder, dictionary);
             merger.MergeDictionaries(words);
         }
     }
@@ -114,7 +142,7 @@ public class DictionaryUpdater
 
         foreach (string dictionary in dictionaries)
         {
-            merger = new DictionaryMerger(dictionaryFolder, dictionary, addToDictionary: false);
+            merger = new DictionaryMerger(DictionaryFolder, dictionary, addToDictionary: false);
             merger.MergeDictionaries(word);
         }
     }
@@ -130,29 +158,29 @@ public class DictionaryUpdater
 
         foreach (string dictionary in dictionaries)
         {
-            merger = new DictionaryMerger(dictionaryFolder, dictionary, addToDictionary: false);
+            merger = new DictionaryMerger(DictionaryFolder, dictionary, addToDictionary: false);
             merger.MergeDictionaries(words);
         }
     }
 
     /// <summary>
-    /// Given a known word, add it to the known words list.
+    /// Given a known valid word, add it to the known valid words list.
     /// </summary>
-    /// <param name="knownWord">Known word in a quartiles' solution</param>
-    public void AddToKnownWords(string knownWord)
+    /// <param name="validWord">Known valid word in a quartiles' solution</param>
+    public void AddToValidWords(string validWord)
     {
-        var merger = new DictionaryMerger(knownWordsPath);
-        merger.MergeDictionaries(knownWord);
+        var merger = new DictionaryMerger(ValidWordsPath);
+        merger.MergeDictionaries(validWord);
     }
 
     /// <summary>
-    /// Given a set of known words, add them to the known words list.
+    /// Given a set of known valid words, add them to the known valid words list.
     /// </summary>
-    /// <param name="knownWords">A set of known words in a quartiles' solution</param>
-    public void AddToKnownWords(HashSet<string> knownWords)
+    /// <param name="validWords">A set of known valid words in a quartiles' solution</param>
+    public void AddToValidWords(HashSet<string> validWords)
     {
-        var merger = new DictionaryMerger(knownWordsPath);
-        merger.MergeDictionaries(knownWords);
+        var merger = new DictionaryMerger(ValidWordsPath);
+        merger.MergeDictionaries(validWords);
     }
 
     /// <summary>
@@ -161,7 +189,7 @@ public class DictionaryUpdater
     /// <param name="invalidWord">A word that is not part of a quartiles' solution</param>
     public void AddToInvalidWords(string invalidWord)
     {
-        var merger = new DictionaryMerger(invalidWordsPath);
+        var merger = new DictionaryMerger(InvalidWordsPath);
         merger.MergeDictionaries(invalidWord);
     }
 
@@ -171,37 +199,37 @@ public class DictionaryUpdater
     /// <param name="invalidWords">A set of words that are not part of a quartiles' solution</param>
     public void AddToInvalidWords(HashSet<string> invalidWords)
     {
-        var merger = new DictionaryMerger(invalidWordsPath);
+        var merger = new DictionaryMerger(InvalidWordsPath);
         merger.MergeDictionaries(invalidWords);
     }
 
     /// <summary>
-    /// Given a known word, add it to all used dictionaries and the known words list.
+    /// Given a known valid word, add it to all used dictionaries and the known valid words list.
     /// <para>
-    /// Note: Most known words are in the master dictionary, so doing this operation can be unnecessary and slow.
+    /// Note: Most known valid words are in the master dictionary, so doing this operation can be unnecessary and slow.
     /// But, it is useful in the fact that it ensures all words in the known word list are in the master dictionary.
     /// </para>
     /// </summary>
-    /// <param name="knownWord">A known word in the quartile solution</param>
-    public void AddUpdate(string knownWord)
+    /// <param name="validWord">A known valid word in the quartile solution</param>
+    public void AddUpdate(string validWord)
     {
-        AddToDictionaries(knownWord);
-        AddToKnownWords(knownWord);
+        AddToDictionaries(validWord);
+        AddToValidWords(validWord);
     }
 
     /// <summary>
     /// Given a set of known valid words, add them to all used dictionaries and the known words list.
     /// 
     /// <para>
-    /// Note: Most known words are in the master dictionary, so doing this operation can be unnecessary and slow.
-    /// But, it is useful in the fact that it ensures all words in the known word list are in the master dictionary.
+    /// Note: Most known valid words are in the master dictionary, so doing this operation can be unnecessary and slow.
+    /// But, it is useful in the fact that it ensures all words in the known valid word list are in the master dictionary.
     /// </para>
     /// </summary>
-    /// <param name="knownWords">A set of known word in a quartile solution</param>
-    public void AddUpdate(HashSet<string> knownWords)
+    /// <param name="validWords">A set of known word in a quartile solution</param>
+    public void AddUpdate(HashSet<string> validWords)
     {
-        AddToDictionaries(knownWords);
-        AddToKnownWords(knownWords);
+        AddToDictionaries(validWords);
+        AddToValidWords(validWords);
     }
 
     /// <summary>
@@ -236,11 +264,15 @@ public class DictionaryUpdater
         RemoveUpdate(allWords);
     }
 
+    /// <summary>
+    /// Given a source path to only known valid words, reads all lines and calls AddUpdate
+    /// </summary>
+    /// <param name="sourcePath">Path to file containing only known valid words</param>
     public void AddUpdateFromFile(string sourcePath)
     {
         var merger = new DictionaryMerger();
+        paths.VerifyFile(sourcePath);
 
-        merger.VerifyPath(sourcePath);
         var sourceWords = new HashSet<string>(File.ReadAllLines(sourcePath));
         var safeSourceWords = merger.FilterValidWords(sourceWords);
 
@@ -266,7 +298,7 @@ public class DictionaryUpdater
     /// <returns>A list of dictionary file names (without the file extensions)</returns>
     private List<string> GetDictionaries()
     {
-        List<string> dictionaries = Directory.GetFiles(dictionaryFolder, "*.txt")
+        List<string> dictionaries = Directory.GetFiles(DictionaryFolder, "*.txt")
                              .Select(Path.GetFileNameWithoutExtension)
                              .ToList();
 
@@ -274,8 +306,6 @@ public class DictionaryUpdater
 
         return dictionaries;
     }
-
-    public static void Main(string[] args) { }
 }
 
 
