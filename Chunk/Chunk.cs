@@ -7,61 +7,55 @@ namespace Chunks
     /// </summary>
     public class Chunk
     {
+        // Backing fields
+        private int _row;
+        private int _column;
+
         /// <summary>
         /// Letter data contained in a chunk
         /// </summary>
         public string Letters { get; set; }
 
         /// <summary>
-        /// Helper variable for Row getter and setter
-        /// </summary>
-        private int row;
-
-        /// <summary>
         /// Gets and sets the current row. When set, value is updated
         /// </summary>
         public int Row
         {
-            get => row;
+            get => _row;
             set
             {
-                row = value;
+                _row = value;
                 UpdateValue();
             }
         }
 
         /// <summary>
-        /// Helper variable for Column getter and setter
-        /// </summary>
-        private int column;
-
-        /// <summary>
-        /// Gets and set the current row. When set, value is updated
+        /// Gets and sets the current row. When set, value is updated
         /// </summary>
         public int Column
         {
-            get => column;
+            get => _column;
             set
             {
-                column = value;
+                _column = value;
                 UpdateValue();
             }
         }
 
         /// <summary>
-        /// Position of the chunk in a 1D array
+        /// Gets and sets the position of the chunk in a 1D array
         /// </summary>
         public int Value { get; private set; }
 
         /// <summary>
-        /// Center position of the chunk on the screen
+        /// Gets and sets the center position of the chunk on the screen
         /// </summary>
         public Point CenterPos { get; set; }
 
         /// <summary>
-        /// Largest amount of chunks that can be used to create a solution (aka the column width)
+        /// Gets and sets the largest amount of chunks that can be used to create a solution (aka the column width)
         /// </summary>
-        private int maxChunkSize;
+        public int MaxChunkSize { get; set; }
 
         /// <summary>
         /// Constructor for a chunk object
@@ -74,7 +68,7 @@ namespace Chunks
         public Chunk(string letters, int row, int column, Point? centerPos = null, int maxChunkSize = 4)
         {
             Letters = letters;
-            this.maxChunkSize = maxChunkSize;
+            MaxChunkSize = maxChunkSize;
             Row = row;
             Column = column;
             CenterPos = centerPos ?? default;
@@ -102,8 +96,8 @@ namespace Chunks
         /// <param name="value">Position of the chunk in a 1D array</param>
         public void UpdateRowsAndColumns(int value)
         {
-            Row = value / maxChunkSize;
-            Column = value % maxChunkSize;
+            Row = value / MaxChunkSize;
+            Column = value % MaxChunkSize;
         }
 
         /// <summary>
@@ -111,7 +105,7 @@ namespace Chunks
         /// </summary>
         private void UpdateValue()
         {
-            Value = Row * maxChunkSize + Column;
+            Value = Row * MaxChunkSize + Column;
         }
     }
 }
