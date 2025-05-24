@@ -60,7 +60,7 @@ public class DictionaryMerger
     public bool addToDictionary { get; set; }
 
     // Contains common paths
-    private QuartilePaths paths = new QuartilePaths(libraryUse: false);
+    private QuartilePaths paths = new QuartilePaths(filesToBeModified: true);
 
     /// <summary>
     /// Default constructor for DictionaryMerger

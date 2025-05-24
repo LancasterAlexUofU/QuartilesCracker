@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Paths\Paths.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Dictionaries\2of12.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

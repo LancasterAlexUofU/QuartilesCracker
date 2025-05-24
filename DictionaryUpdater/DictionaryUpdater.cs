@@ -9,7 +9,7 @@ namespace Updater;
 public class DictionaryUpdater
 {
     // Contains common paths
-    private QuartilePaths paths = new QuartilePaths();
+    private QuartilePaths paths = new QuartilePaths(filesToBeModified: true);
 
     // Backing fields
     private string _dictionaryFolder;
@@ -24,7 +24,7 @@ public class DictionaryUpdater
         get => _dictionaryFolder; 
         set
         {
-            paths.VerifyDirectory(_dictionaryFolder);
+            paths.VerifyDirectory(value);
             _dictionaryFolder = value;
         }
     }

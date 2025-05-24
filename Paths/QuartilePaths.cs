@@ -6,6 +6,7 @@
     public class QuartilePaths
     {
         // Backing fields
+        private string _chunkExtractorRoot;
         private string _chunkRoot;
         private string _dictionaryMergerRoot;
         private string _dictionaryUpdaterRoot;
@@ -16,6 +17,7 @@
         private string _quartilesToTextRoot;
         private string _solutionClickerRoot;
 
+        private string _chunkExtractorChunkFolder;
         private string _dictionaryMergerDictFolder;
         private string _dictionaryUpdaterListsFolder;
         private string _quartilesAnswersFolder;
@@ -26,7 +28,6 @@
         private string _quartilesTestListsCopyFolder;
         private string _quartilesTestListsFolder;
         private string _quartilesTestSourceFolder;
-        private string _quartilesToTextChunksFolder;
         private string _quartilesToTextImagesFolder;
         private string _quartilesToTextTessdataBackupFolder;
         private string _quartilesToTextTessdataFolder;
@@ -43,6 +44,11 @@
         /// Path to the folders when the solution is build (bin\Debug\netX.X). Used when files aren't being added or modified in library use
         /// </summary>
         public string BuildRoot { get; private set; } = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory));
+
+        /// <summary>
+        /// Path for the ChunkExtractor class
+        /// </summary>
+        public string ChunkExtractorRoot { get { VerifyDirectory(_chunkExtractorRoot); return _chunkExtractorRoot; } private set { _chunkExtractorRoot = value; } }
 
         /// <summary>
         /// Path for the Chunk library
@@ -91,6 +97,12 @@
 
         // > > > Folders inside projects < < <
         // -----------------------------------
+
+
+        /// <summary>
+        /// List of Quartile games as their "chunk" formation. Files are in the form "quartiles-chunk-YYYY-MM-DD.png"
+        /// </summary>
+        public string ChunkExtractorChunkFolder { get { VerifyDirectory(_chunkExtractorChunkFolder); return _chunkExtractorChunkFolder; } private set { _chunkExtractorChunkFolder = value; } }
 
         /// <summary>
         /// Dictionary folder that contains a variety of different dictionaries
@@ -143,11 +155,6 @@
         public string QuartilesTestSourceFolder { get { VerifyDirectory(_quartilesTestSourceFolder); return _quartilesTestSourceFolder; } private set { _quartilesTestSourceFolder = value; } }
 
         /// <summary>
-        /// List of Quartile games as their "chunk" formation. Files are in the form "quartiles-chunk-YYYY-MM-DD.png"
-        /// </summary>
-        public string QuartilesToTextChunksFolder { get { VerifyDirectory(_quartilesToTextChunksFolder); return _quartilesToTextChunksFolder; } private set { _quartilesToTextChunksFolder = value; } }
-
-        /// <summary>
         /// Image Folder that contains pictures of Quartile games. Files are in the form "quartiles-YYYY-MM-DD.png"
         /// </summary>
         public string QuartilesToTextImagesFolder { get { VerifyDirectory(_quartilesToTextImagesFolder); return _quartilesToTextImagesFolder; } private set { _quartilesToTextImagesFolder = value; } }
@@ -169,11 +176,12 @@
         /// Files that are written to in bin folders are deleted, so they need to be written to equivalent top-level folders. All top-level folders will be copied to equivalent build bins if modified.
         /// </para>
         /// </summary>
-        /// <param name="libraryUse">If being used in a library format (where folders are found in the bin folder)</param>
-        public QuartilePaths(bool libraryUse = true)
+        /// <param name="filesToBeModified">False, If being used in a library format (where folders are found in the bin folder), true if files are going to be modified</param>
+        public QuartilePaths(bool filesToBeModified)
         {
             // If adding a new folder, make sure to add to both the BuildRoot and the local root
 
+            ChunkExtractorRoot = Path.GetFullPath(Path.Combine(SolutionRoot, "ChunkExtractor"));
             ChunkRoot = Path.GetFullPath(Path.Combine(SolutionRoot, "Chunk"));
             DictionaryMergerRoot = Path.GetFullPath(Path.Combine(SolutionRoot, "DictionaryMerger"));
             DictionaryUpdaterRoot = Path.GetFullPath(Path.Combine(SolutionRoot, "DictionaryUpdater"));
@@ -184,8 +192,9 @@
             QuartilesToTextRoot = Path.GetFullPath(Path.Combine(SolutionRoot, "QuartilesToText"));
             SolutionClickerRoot = Path.GetFullPath(Path.Combine(SolutionRoot, "SolutionClicker"));
 
-            if (libraryUse)
+            if (!filesToBeModified)
             {
+                ChunkExtractorChunkFolder = Path.Combine(BuildRoot, "QuartileChunks");
                 DictionaryMergerDictFolder = Path.Combine(BuildRoot, "Dictionaries");
                 DictionaryUpdaterListsFolder = Path.Combine(BuildRoot, "Lists");
                 QuartilesAnswersFolder = Path.Combine(BuildRoot, "QuartilesAnswers");
@@ -195,7 +204,6 @@
                 QuartilesTestListsCopyFolder = Path.Combine(BuildRoot, "TestListsCopy");
                 QuartilesTestListsFolder = Path.Combine(BuildRoot, "TestLists");
                 QuartilesTestSourceFolder = Path.Combine(BuildRoot, "TestSource");
-                QuartilesToTextChunksFolder = Path.Combine(BuildRoot, "QuartileChunks");
                 QuartilesToTextImagesFolder = Path.Combine(BuildRoot, "QuartileImages");
                 QuartilesToTextTessdataBackupFolder = Path.Combine(BuildRoot, "tessdataBackup");
                 QuartilesToTextTessdataFolder = Path.Combine(BuildRoot, "tessdata");
@@ -203,6 +211,7 @@
 
             else
             {
+                ChunkExtractorChunkFolder = Path.Combine(ChunkExtractorRoot, "QuartileChunks");
                 DictionaryMergerDictFolder = Path.Combine(DictionaryMergerRoot, "Dictionaries");
                 DictionaryUpdaterListsFolder = Path.Combine(DictionaryUpdaterRoot, "Lists");
                 QuartilesAnswersFolder = Path.Combine(QuartilesAnswersRoot, "QuartilesAnswers");
@@ -212,7 +221,6 @@
                 QuartilesTestListsCopyFolder = Path.Combine(QuartilesTestRoot, "TestListsCopy");
                 QuartilesTestListsFolder = Path.Combine(QuartilesTestRoot, "TestLists");
                 QuartilesTestSourceFolder = Path.Combine(QuartilesTestRoot, "TestSource");
-                QuartilesToTextChunksFolder = Path.Combine(QuartilesToTextRoot, "QuartileChunks");
                 QuartilesToTextImagesFolder = Path.Combine(QuartilesToTextRoot, "QuartileImages");
                 QuartilesToTextTessdataBackupFolder = Path.Combine(QuartilesToTextRoot, "tessdataBackup");
                 QuartilesToTextTessdataFolder = Path.Combine(QuartilesToTextRoot, "tessdata");

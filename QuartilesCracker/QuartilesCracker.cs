@@ -1,19 +1,36 @@
-﻿namespace Quartiles;
+﻿using Paths;
+
+namespace Quartiles;
 
 /// <summary>
 /// Class that solves a quartiles game given a list of the letter tiles
 /// </summary>
 public class QuartilesCracker
 {
-    // Gets and sets the maximum number of words chunks that can be used to form a word
-    public int MaxChunks { get; set; } = 4;
-
-    // Gets and sets the maximum number of lines (rows) in a quartile game
-    public int MaxLines { get; set; } = 5;
+    // Contains common paths
+    private QuartilePaths paths = new QuartilePaths(filesToBeModified: false);
 
     private string _currentDictionary = "quartiles_dictionary";
 
-    // Gets and Sets the filename (without file extension) for the dictionary to search for words and automatically reloads the dictionary if it is changed by the user
+    // Path to the Dictionary file
+    private string DictionaryPath => Path.Combine(paths.QuartilesCrackerDictFolder, $"{CurrentDictionary}.txt");
+
+    // HashSet that contains all words for quick lookup
+    private HashSet<string> dictionary = [];
+
+    /// <summary>
+    /// Gets and sets the maximum number of words chunks that can be used to form a word
+    /// </summary>
+    public int MaxChunks { get; set; } = 4;
+
+    /// <summary>
+    /// Gets and sets the maximum number of lines (rows) in a quartile game
+    /// </summary>
+    public int MaxLines { get; set; } = 5;
+
+    /// <summary>
+    /// Gets and Sets the filename (without file extension) for the dictionary to search for words and automatically reloads the dictionary if it is changed by the user
+    /// </summary>
     public string CurrentDictionary
     {
         get => _currentDictionary;
@@ -26,15 +43,6 @@ public class QuartilesCracker
             }
         }
     }
-
-    // Path to where the Dictionary Folder exists (inside debug folder)
-    private static readonly string dictionaryFolder = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "Dictionaries"));
-
-    // Path to the Dictionary file
-    private string DictionaryPath => Path.Combine(dictionaryFolder, $"{CurrentDictionary}.txt");
-
-    // HashSet that contains all words for quick lookup
-    private HashSet<string> dictionary = [];
 
     /// <summary>
     /// Constructor for QuartilesCracker that initializes the current dictionary
@@ -111,14 +119,6 @@ public class QuartilesCracker
         }
     }
 
-    private void VerifyDictionary()
-    {
-        if(!File.Exists(DictionaryPath))
-        {
-            throw new FileNotFoundException($"Dictionary file not found: {DictionaryPath}");
-        }
-    }
-
     /// <summary>
     /// Removes duplicate solutions and saves it to the ORIGINAL passed parameter
     /// </summary>
@@ -140,9 +140,12 @@ public class QuartilesCracker
         solutionChunkMapping.AddRange(uniqueMappings);
     }
 
+    /// <summary>
+    /// Loads new words into a new dictionary
+    /// </summary>
     private void LoadDictionary()
     {
-        VerifyDictionary();
+        paths.VerifyFile(DictionaryPath);
         dictionary = [.. File.ReadAllLines(DictionaryPath)];
     }
 }

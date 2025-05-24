@@ -1,145 +1,114 @@
 ﻿using System.Text.RegularExpressions;
 using Tesseract;
+using Paths;
 
 namespace QuartilesToText;
 
 public class QTT
 {
-    private const int MAX_CHUNK_SIZE = 5;
-
-    // Only matches lower case letters between size 1-max size separated by non-word characters
-    private string regex = $@"\b[a-z]{{1,{MAX_CHUNK_SIZE}}}\b";
-
-    private string dataPath;
-    public string imageFolder;
-    public string chunkFolder;
-    private string imagePath;
+    private QuartilePaths paths = new QuartilePaths(filesToBeModified: false);
     private TesseractEngine engine;
 
-    public List<string> chunks;
+    private int _minChunkSize = 2;
+    private int _maxChunkSize = 5;
+
+    /// <summary>
+    /// Gets and sets the minimum character size a chunk can be
+    /// </summary>
+    public int MinChunkSize
+    {
+        get => _minChunkSize;
+        set
+        {
+            if (value < 1)
+            {
+                Console.WriteLine("Warning! Minimum chunk size is less than 1. Setting minimum chunk size to 1.");
+                _minChunkSize = 1;
+            }
+
+            else if (value > MaxChunkSize)
+            {
+                Console.WriteLine($"Warning! Minimum chunk size is greater than maximum chunk size. Setting minimum chunk size to {MaxChunkSize - 1}");
+                _minChunkSize = MaxChunkSize - 1;
+            }
+
+            else
+            {
+                _minChunkSize = value;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets and sets the maximum character size a chunk can be
+    /// </summary>
+    public int MaxChunkSize
+    {
+        get => _maxChunkSize;
+        set
+        {
+            if (value < MinChunkSize)
+            {
+                Console.WriteLine($"Warning! Maximum chunks size is smaller than minimum chunk size. Setting maximum chunk size to {MinChunkSize + 1}");
+                _maxChunkSize = MinChunkSize + 1;
+            }
+
+            else
+            {
+                _maxChunkSize = value;
+            }
+        }
+    }
+
+    public string ImageName { get; set; }
+
+    public string ImagePath { get => Path.Combine(paths.QuartilesToTextImagesFolder, ImageName); set { } }
 
     public QTT(string imageName)
     {
-        // Go back 3 levels from bin\debug\netX.Y to get the project directory
-        string projectRoot = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\"));
-        string QTTRoot = Path.GetFullPath(Path.Combine(projectRoot, @"..\QuartilesToText"));
-        imageFolder = Path.Combine(QTTRoot, "QuartileImages");
-        chunkFolder = Path.Combine(QTTRoot, "QuartileChunks");
-        imagePath = Path.Combine(imageFolder, imageName);
-        dataPath = Path.Combine(QTTRoot, "tessdata");
-        chunks = new List<string>();
-
-        if (!File.Exists(imagePath))
-        {
-            throw new Exception($"Image not found: {imagePath}");
-        }
-
-        if(!Directory.Exists(dataPath))
-        {
-            throw new Exception($"Tesseract data path not found: {dataPath}");
-        }
+        ImageName = imageName;
 
         // LSTM engine is a neural network engine and is usually better than the legacy engine
         // Using data from tessdata_best/eng.traineddata (which is specifically for LSTM)
         // If you change the engine mode back to using legacy, the eng.traineddata will also need to be changed to the correct one
-        engine = new TesseractEngine(dataPath, "eng", EngineMode.LstmOnly);
+        engine = new TesseractEngine(paths.QuartilesToTextTessdataFolder, "eng", EngineMode.LstmOnly);
         engine.DefaultPageSegMode = PageSegMode.SingleBlock;
     }
 
-    public void ExtractChunks()
+    public List<string> ExtractChunks()
     {
         string chunkText;
+        List<string> chunks = [];
 
-        Pix image = Pix.LoadFromFile(imagePath);
+        // Only matches lower case letters between minimum and maximum sizes separated by non-word characters
+        string chunkPattern = $@"\b[a-z]{{{MinChunkSize},{MaxChunkSize}}}\b";
+
+        Pix image = Pix.LoadFromFile(ImagePath);
         Page page = engine.Process(image);
         chunkText = page.GetText().ToLower();
 
-
-        var matches = Regex.Matches(chunkText, regex);
+        var matches = Regex.Matches(chunkText, chunkPattern);
 
         foreach(Match match in matches)
         {
             chunks.Add(match.Value);
         }
+
+        return chunks;
     }
 
     public string ExtractScore()
     {
         string score;
 
-        Pix image = Pix.LoadFromFile(imagePath);
+        Pix image = Pix.LoadFromFile(ImagePath);
 
-        // Seperate using statement for page so multiple engines don't try to process the same image
+        // Using statement so multiple engines don't try to process the same image
         using (Page page = engine.Process(image))
         {
             score = page.GetText();
         }
 
         return score;
-    }
-
-    public void PrintChunks()
-    {
-        if(chunks.Count != 20)
-        {
-            Console.WriteLine($"Warning!! Expected 20 chunks, but only contained {chunks.Count} chunks.");
-        }
-
-        foreach (string chunk in chunks)
-        {
-            Console.WriteLine(chunk);
-        }
-    }
-
-    private void WriteChunksToFile(string chunkFilePath)
-    {
-        File.WriteAllLines(chunkFilePath, chunks);
-        File.AppendAllText(chunkFilePath, "!!!UNVERIFIED!!!");
-    }
-
-    public void ScanAllImages()
-    {
-        // Image files need to be in the form of quartiles-YYYY-MM-DD.png
-        string validImageNamePattern = @"quartiles-\d{4}-\d{2}-\d{2}\.png";
-
-        string[] quartileImages = Directory.GetFiles(imageFolder);
-        foreach (string image in quartileImages)
-        {
-            if(Regex.IsMatch(image, validImageNamePattern))
-            {
-                string imageFileName = Path.GetFileName(image);
-                string datePart = imageFileName.Substring("quartiles-".Length, "YYYY-MM-DD".Length);
-                string chunkFileName = $"quartiles-chunk-{datePart}.txt";
-                string chunkFilePath = Path.Combine(chunkFolder, chunkFileName);
-
-                if(!File.Exists(chunkFilePath))
-                {
-                    Console.WriteLine($"Writing to {imageFileName}.\n");
-                    var extractor = new QTT(image);
-                    extractor.ExtractChunks();
-                    extractor.WriteChunksToFile(chunkFilePath);
-                }
-
-                else
-                {
-                    Console.WriteLine($"File {chunkFileName} already exists, skipping\n");
-                }
-            }
-        }
-    }
-
-    public static void Main()
-    {
-        //string date = "2024-11-06";
-
-        //string imageName = $"quartiles-{date}.png";
-
-        string imageName = "quartiles-2024-06-16.png";
-
-        var extractor = new QTT(imageName);
-
-        extractor.ScanAllImages();
-        //extractor.ExtractChunks();
-        //extractor.PrintChunks();
     }
 }

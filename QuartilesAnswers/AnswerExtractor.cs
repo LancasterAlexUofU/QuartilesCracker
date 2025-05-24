@@ -1,22 +1,21 @@
 ﻿using HtmlAgilityPack;
+using Paths;
 using Updater;
 
 class AnswerExtractor
 {
     static async Task Main(string[] args)
     {
+        var paths = new QuartilePaths(true);
+        var updater = new DictionaryUpdater();
+
         // The first quartiles game was released on this date
         DateTime endDate = new DateTime(2024, 5, 10);
-
-        string projectRoot = Path.GetFullPath(@"../../../");
-        string quartilesAnswersFolder = Path.Combine(projectRoot, "QuartilesAnswers");
-
-        var updater = new DictionaryUpdater();
 
         for (DateTime date = DateTime.Today; date >= endDate; date = date.AddDays(-1))
         {
             string formattedDate = date.ToString("yyyy-MM-dd");
-            string outputPath = Path.Combine(quartilesAnswersFolder, $"quartiles-answers-{formattedDate}.txt");
+            string outputPath = Path.Combine(paths.QuartilesAnswersFolder, $"quartiles-answers-{formattedDate}.txt");
 
             if(File.Exists(outputPath))
             {
@@ -75,10 +74,6 @@ class AnswerExtractor
             {
                 Console.WriteLine("No answers found on this page.");
             }
-
-            //var random = new Random();
-            //int delay = random.Next(1000, 1750); // add slight random "human-like" delay to avoid overwhelming the server
-            //await Task.Delay(delay);
         }
     }
 }

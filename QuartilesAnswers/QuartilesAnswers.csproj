@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DictionaryUpdater\DictionaryUpdater.csproj" />
+    <ProjectReference Include="..\Paths\Paths.csproj" />
   </ItemGroup>
 
   <ItemGroup>
