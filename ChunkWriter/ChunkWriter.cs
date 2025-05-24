@@ -7,12 +7,14 @@ using QuartilesToText;
 /// </summary>
 class ChunkWriter
 {
+    private QuartilePaths paths = new QuartilePaths(filesToBeModified: true);
+
     /// <summary>
     /// Scans all image files in QuartilesToTextImagesFolder and writes the individual chunks to ChunkExtractorChunkFolder
     /// </summary>
     public void ScanAllImages()
     {
-        var paths = new QuartilePaths(filesToBeModified: true);
+
         using (var extractor = new QuartilesOCR(filesToBeModified: true))
         {
             // Image files need to be in the form of quartiles-YYYY-MM-DD.png
@@ -48,6 +50,31 @@ class ChunkWriter
     }
 
     /// <summary>
+    /// Checks for any files that have not been verified by humans (removed the !!!UNVERIFIED!!! tag at the end of a chunk file)
+    /// </summary>
+    public void CheckForUnverifiedFiles()
+    {
+        string[] quartileChunks = Directory.GetFiles(paths.ChunkWriterChunkFolder);
+        bool anyUnverifiedFiles = false;
+
+        foreach (string chunkPath in quartileChunks)
+        {
+            var chunkFileName = Path.GetFileName(chunkPath);
+            var chunks = new HashSet<string>(File.ReadAllLines(chunkPath));
+            if (chunks.Contains("!!!UNVERIFIED!!!"))
+            {
+                Console.WriteLine($"{chunkFileName} is unverified!");
+                anyUnverifiedFiles = true;
+            }
+        }
+
+        if(!anyUnverifiedFiles)
+        {
+            Console.WriteLine("All files are verified.");
+        }
+    }
+
+    /// <summary>
     /// Writes all chunks to a given chunk file path, appends !!!UNVERIFIED!!! at the end of each file as OCR can be incorrect
     /// </summary>
     /// <param name="chunkFilePath">File path to write chunks to</param>
@@ -62,5 +89,6 @@ class ChunkWriter
     {
         var chunkExtractor = new ChunkWriter();
         chunkExtractor.ScanAllImages();
+        chunkExtractor.CheckForUnverifiedFiles();
     }
 }
