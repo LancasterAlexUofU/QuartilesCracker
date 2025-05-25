@@ -1,10 +1,16 @@
 using Quartiles;
+using Paths;
 
 namespace QuartilesTest
 {
+
     [TestClass]
     public class PermutationTests
     {
+
+        private QuartilesCracker solver = new QuartilesCracker();
+        private QuartilePaths paths = new QuartilePaths(false);
+
         [TestMethod]
         public void GetPermutations_PermutationSize1_ContainsCorrectResults()
         {
@@ -28,6 +34,9 @@ namespace QuartilesTest
             {
                 CollectionAssert.Contains(solver.results, word);
             }
+
+
+
         }
 
         [TestMethod]
