@@ -2,6 +2,8 @@
 using Paths;
 using Updater;
 
+namespace Answers;
+
 class AnswerExtractor
 {
     static async Task Main(string[] args)

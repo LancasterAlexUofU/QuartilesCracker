@@ -21,9 +21,6 @@
     <None Update="MasterDictionaries\quartiles_dictionary.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="MasterDictionaries\quartiles_dictionary_updated.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="Dictionaries\words_alpha.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

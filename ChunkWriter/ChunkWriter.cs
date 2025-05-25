@@ -2,12 +2,16 @@
 using Paths;
 using QuartilesToText;
 
+namespace ChunkWrite;
+
 /// <summary>
 /// Class that scans chunks from Quartile games and writes chunks to files
 /// </summary>
-class ChunkWriter
+public class ChunkWriter
 {
     private QuartilePaths paths = new QuartilePaths(filesToBeModified: true);
+
+    public ChunkWriter() { }
 
     /// <summary>
     /// Scans all image files in QuartilesToTextImagesFolder and writes the individual chunks to ChunkExtractorChunkFolder
@@ -60,8 +64,8 @@ class ChunkWriter
         foreach (string chunkPath in quartileChunks)
         {
             var chunkFileName = Path.GetFileName(chunkPath);
-            var chunks = new HashSet<string>(File.ReadAllLines(chunkPath));
-            if (chunks.Contains("!!!UNVERIFIED!!!"))
+            
+            if (!FileVerified(chunkPath))
             {
                 Console.WriteLine($"{chunkFileName} is unverified!");
                 anyUnverifiedFiles = true;
@@ -72,6 +76,17 @@ class ChunkWriter
         {
             Console.WriteLine("All files are verified.");
         }
+    }
+
+    public bool FileVerified(string chunkPath)
+    {
+        var chunks = new HashSet<string>(File.ReadAllLines(chunkPath));
+        if (chunks.Contains("!!!UNVERIFIED!!!"))
+        {
+            return false;
+        }
+
+        return true;
     }
 
     /// <summary>

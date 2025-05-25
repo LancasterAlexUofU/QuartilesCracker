@@ -12,10 +12,4 @@
     <ProjectReference Include="..\QuartilesCracker\QuartilesCracker.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="UpdatedDictionaries\quartiles_dictionary_updated.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>

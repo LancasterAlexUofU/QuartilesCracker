@@ -15,7 +15,7 @@ namespace QuartilesTest
         public void Setup()
         {
             solver = new QuartilesCracker();
-            solver.CurrentDictionary = "quartiles_dictionary_updated";
+            solver.CurrentDictionary = "quartiles_dictionary";
 
             //// 2024-05-30 Quartile
             //// https://pbs.twimg.com/media/GPKt8_UasAACWGe.jpg:large
