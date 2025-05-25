@@ -12,4 +12,13 @@
     <ProjectReference Include="..\Paths\Paths.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Lists\known_invalid_words.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Lists\known_valid_words.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

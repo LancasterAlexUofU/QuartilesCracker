@@ -98,7 +98,7 @@ public class QuartilesCracker
     /// <param name="solutions">Set where solutions are stored. Initially empty</param>
     /// <param name="solutionChunkMapping">Dictionary where solution-chunk mappings are stored. Initially empty/param>
     /// <param name="maxChunks">Maximum amount of chunks to use when permutating</param>
-    protected void GetPermutations(List<string> chunksOutOfList, List<string> chunksInList, HashSet<string> solutions, Dictionary<string, List<string>> solutionChunkMapping, int maxChunks)
+    public void GetPermutations(List<string> chunksOutOfList, List<string> chunksInList, HashSet<string> solutions, Dictionary<string, List<string>> solutionChunkMapping, int maxChunks)
     {
         if(chunksOutOfList.Count == maxChunks)
         {
@@ -130,7 +130,7 @@ public class QuartilesCracker
     /// <param name="chunksInList">Chunks available to use for permutation. Initially full chunk list</param>
     /// <param name="solutions">Set where solutions are stored. Initially empty</param>
     /// <param name="maxChunks">Maximum amount of chunks to use when permutating</param>
-    protected void GetPermutations(List<string> chunksOutOfList, List<string> chunksInList, HashSet<string> solutions, int maxChunks)
+    public void GetPermutations(List<string> chunksOutOfList, List<string> chunksInList, HashSet<string> solutions, int maxChunks)
     {
         if (chunksOutOfList.Count == maxChunks)
         {
@@ -159,7 +159,7 @@ public class QuartilesCracker
     /// </summary>
     /// <param name="chunks">The letters found in a Quartiles game</param>
     /// <exception cref="Exception">Thrown if the size of the list doesn't match board size</exception>
-    private void VerifyChunks(List<string> chunks)
+    public void VerifyChunks(List<string> chunks)
     {
         if(chunks.Count != MaxChunks * MaxLines)
         {

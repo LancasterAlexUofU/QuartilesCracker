@@ -111,7 +111,7 @@ public class QuartilesOCR : IDisposable
     /// Default constructor for QuartilesOCR. Important: need to set ImageName before running extractor
     /// </summary>
     /// <param name="filesToBeModified">If files are modified, set this to true</param>
-    public QuartilesOCR(bool filesToBeModified = false) : this(imageName: ".png", filesToBeModified) { }
+    public QuartilesOCR(bool filesToBeModified = false) : this(imageName: "empty.png", filesToBeModified) { }
 
     /// <summary>
     /// Constructor that sets an image name for scanning

@@ -111,7 +111,7 @@ public class SolutionClicker
     private bool perfectPopupClosed;
 
     private List<string> chunks = [];
-    private List<string> solutions = [];
+    private HashSet<string> solutions = [];
     private List<KeyValuePair<string, List<string>>> solutionChunkMapping = [];
     private QuartilePaths paths = new QuartilePaths(filesToBeModified: true);
 
@@ -225,7 +225,7 @@ public class SolutionClicker
     /// </summary>
     private void SolveQuartile()
     {
-        (solutions, solutionChunkMapping) = solver.QuartileSolver(chunks);
+        solutions = solver.QuartileSolver(chunks);
     }
 
     /// <summary>

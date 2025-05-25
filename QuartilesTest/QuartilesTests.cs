@@ -5,14 +5,17 @@ namespace QuartilesTest
     [TestClass]
     public class QuartilesTests
     {
+        private QuartilesCracker solver = new QuartilesCracker();
+        private QuartilesOCR extractor = new QuartilesOCR();
+
         [TestMethod]
         public void QuartilesDriver_SolveQuartile1_ReturnsCorrectResult()
         {
             // 2024-05-30 Quartile
             // https://pbs.twimg.com/media/GPKt8_UasAACWGe.jpg:large
             // https://www.reddit.com/r/quartiles/comments/1d4577k/20240530/
-            var solver = new QuartilesCracker();
-            solver.chunks = new List<string> {
+            
+            var chunks = new List<string> {
                 "gest", "lo", "nt", "ut",
                 "ger", "di", "ive", "ate",
                 "min", "eco", "gi", "ul",
@@ -29,11 +32,12 @@ namespace QuartilesTest
                 "ate", "gi", "man", "rum", "or"
             };
 
-            solver.QuartilesDriver();
+            var solutions = solver.QuartileSolver(chunks);
+            var solList = solutions.ToList();
 
-            foreach(string word in expected)
+            foreach (string word in expected)
             {
-                CollectionAssert.Contains(solver.results, word);
+                CollectionAssert.Contains(solList, word);
             }
         }
 
@@ -41,12 +45,9 @@ namespace QuartilesTest
         [TestMethod]
         public void QuartilesDriver_SolveQuartile1FromImage_ReturnsCorrectResult()
         {
-            var solver = new QuartilesCracker();
-            var extractor = new QTT("QuartilesTests_quartiles1.png");
-            extractor.ExtractChunks();
-
-            solver.VerifyChunks(extractor.chunks);
-            solver.chunks = extractor.chunks;
+            extractor.ImageName = "QuartilesTests_quartiles1.png";
+            var chunks = extractor.ExtractChunks();
+            solver.VerifyChunks(chunks);
 
             var expected = new List<string> {
                 "diminutive", "ecological", "gesticulate", "rumormonger", "stuntwoman",
@@ -57,11 +58,12 @@ namespace QuartilesTest
                 "ate", "gi", "man", "rum", "or"
             };
 
-            solver.QuartilesDriver();
+            var solutions = solver.QuartileSolver(chunks);
+            var solList = solutions.ToList();
 
             foreach (string word in expected)
             {
-                CollectionAssert.Contains(solver.results, word);
+                CollectionAssert.Contains(solList, word);
             }
         }
 
@@ -71,8 +73,7 @@ namespace QuartilesTest
             // 2024-09-17 Quartile
             // https://www.reddit.com/r/quartiles/comments/1fiytvj/todays_theme/
             // https://www.reddit.com/r/quartiles/comments/1fiyxpf/20240917/
-            var solver = new QuartilesCracker();
-            solver.chunks = new List<string> {
+            var chunks = new List<string> {
                 "og", "hic", "od", "ara",
                 "sc", "ella", "nks", "wi",
                 "rap", "dem", "ly", "ny",
@@ -89,11 +90,12 @@ namespace QuartilesTest
                 "wily", "winks", "winy"
             };
 
-            solver.QuartilesDriver();
+            var solutions = solver.QuartileSolver(chunks);
+            var solList = solutions.ToList();
 
-            foreach(string word in expected)
+            foreach (string word in expected)
             {
-                CollectionAssert.Contains(solver.results, word);
+                CollectionAssert.Contains(solList, word);
             }
         }
 
@@ -102,8 +104,8 @@ namespace QuartilesTest
         {
             // 2024-11-10 Quartile
             // https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMhYJwguUaqFgi3ytlfKjZ6RLjlYrh2OcivA&s
-            var solver = new QuartilesCracker();
-            solver.chunks = new List<string> {
+
+            var chunks = new List<string> {
                 "ter", "ch", "fl", "wo",
                 "age", "od", "ta", "ate",
                 "quis", "acc", "con", "gro",
@@ -120,11 +122,12 @@ namespace QuartilesTest
                 "wood", "work", "wound"
             };
 
-            solver.QuartilesDriver();
+            var solutions = solver.QuartileSolver(chunks);
+            var solList = solutions.ToList();
 
-            foreach(string word in expected)
+            foreach (string word in expected)
             {
-                CollectionAssert.Contains(solver.results, word);
+                CollectionAssert.Contains(solList, word);
             }
         }
 
@@ -132,12 +135,9 @@ namespace QuartilesTest
         [TestMethod]
         public void QuartilesDriver_SolveQuartile3FromImage_ReturnsCorrectResult()
         {
-            var solver = new QuartilesCracker();
-            var extractor = new QTT("QuartilesTests_quartiles3.png");
-            extractor.ExtractChunks();
-
-            solver.VerifyChunks(extractor.chunks);
-            solver.chunks = extractor.chunks;
+            extractor.ImageName = "QuartilesTests_quartiles3.png";
+            var chunks = extractor.ExtractChunks();
+            solver.VerifyChunks(chunks);
 
             var expected = new List<string> {
                 "accommodate", "camouflage", "chatterbox", "conquistador", "groundwork",
@@ -148,11 +148,12 @@ namespace QuartilesTest
                 "wood", "work", "wound"
             };
 
-            solver.QuartilesDriver();
+            var solutions = solver.QuartileSolver(chunks);
+            var solList = solutions.ToList();
 
             foreach (string word in expected)
             {
-                CollectionAssert.Contains(solver.results, word);
+                CollectionAssert.Contains(solList, word);
             }
         }
     }

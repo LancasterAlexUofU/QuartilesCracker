@@ -8,109 +8,96 @@ namespace QuartilesTest
     public class PermutationTests
     {
 
-        private QuartilesCracker solver = new QuartilesCracker();
-        private QuartilePaths paths = new QuartilePaths(false);
+        private QuartilesCracker solver;
+        private List<string> chunks;
+
+        [TestInitialize]
+        public void Setup()
+        {
+            solver = new QuartilesCracker();
+            solver.CurrentDictionary = "quartiles_dictionary_updated";
+
+            //// 2024-05-30 Quartile
+            //// https://pbs.twimg.com/media/GPKt8_UasAACWGe.jpg:large
+            //// https://www.reddit.com/r/quartiles/comments/1d4577k/20240530/
+            chunks = new List<string> {
+            "gest", "lo", "nt", "ut",
+            "ger", "di", "ive", "ate",
+            "min", "eco", "gi", "ul",
+            "stu", "cal", "wo", "man",
+            "rum", "or", "mon", "ic",
+            };
+        }
 
         [TestMethod]
         public void GetPermutations_PermutationSize1_ContainsCorrectResults()
         {
-            // 2024-05-30 Quartile
-            // https://pbs.twimg.com/media/GPKt8_UasAACWGe.jpg:large
-            // https://www.reddit.com/r/quartiles/comments/1d4577k/20240530/
-            var solver = new QuartilesCracker();
-            solver.chunks = new List<string> {
-                "gest", "lo", "nt", "ut",
-                "ger", "di", "ive", "ate",
-                "min", "eco", "gi", "ul",
-                "stu", "cal", "wo", "man",
-                "rum", "or", "mon", "ic",
-            };
+            var expected = new HashSet<string> { "ate", "gi", "man", "rum", "or" };
+            HashSet<string> solutions = [];
+            solver.GetPermutations([], chunks, solutions, 1);
 
-            var expected = new List<string> { "ate", "gi", "man", "rum", "or" };
+            var solList = solutions.ToList();
 
-            solver.GetPermutations([], solver.chunks, 1);
-
-            foreach(string word in expected)
+            foreach (string word in expected)
             {
-                CollectionAssert.Contains(solver.results, word);
+                CollectionAssert.Contains(solList, word, "Solutions does not contain all of expected");
             }
-
-
-
         }
 
         [TestMethod]
         public void GetPermutations_PermutationsSize2_ContainsCorrectResults()
         {
-            var solver = new QuartilesCracker();
-            solver.chunks = new List<string> {
-                "gest", "lo", "nt", "ut",
-                "ger", "di", "ive", "ate",
-                "min", "eco", "gi", "ul",
-                "stu", "cal", "wo", "man",
-                "rum", "or", "mon", "ic",
-            };
-
             var expected = new List<string> { 
                 "digest", "dint", "gestate", "local", "lout", "manger", 
                 "manic", "manor", "minor", "orate", "rumor",
                 "stunt", "woman", "wont"
             };
 
-            solver.GetPermutations([], solver.chunks, 2);
+            HashSet<string> solutions = [];
+            solver.GetPermutations([], chunks, solutions, 2);
 
-            foreach(string word in expected)
+            var solList = solutions.ToList();
+
+            foreach (string word in expected)
             {
-                CollectionAssert.Contains(solver.results, word);
+                CollectionAssert.Contains(solList, word, "Solutions does not contain all of expected");
             }
         }
 
         [TestMethod]
         public void GetPermutations_PermutationsSize3_ContainsCorrectResults()
         {
-            var solver = new QuartilesCracker();
-            solver.chunks = new List<string> {
-                "gest", "lo", "nt", "ut",
-                "ger", "di", "ive", "ate",
-                "min", "eco", "gi", "ul",
-                "stu", "cal", "wo", "man",
-                "rum", "or", "mon", "ic",
-            };
-
             var expected = new List<string> { 
                 "callout", "caloric", "digestive", "germinate", "logical", 
                 "stuntman", 
             };
 
-            solver.GetPermutations([], solver.chunks, 3);
+            HashSet<string> solutions = [];
+            solver.GetPermutations([], chunks, solutions, 3);
 
-            foreach(string word in expected)
+            var solList = solutions.ToList();
+
+            foreach (string word in expected)
             {
-                CollectionAssert.Contains(solver.results, word);
+                CollectionAssert.Contains(solList, word, "Solutions does not contain all of expected");
             }
         }
 
         [TestMethod]
         public void GetPermutations_PermutationsSize4_ContainsCorrectResults()
         {
-            var solver = new QuartilesCracker();
-            solver.chunks = new List<string> {
-                "gest", "lo", "nt", "ut",
-                "ger", "di", "ive", "ate",
-                "min", "eco", "gi", "ul",
-                "stu", "cal", "wo", "man",
-                "rum", "or", "mon", "ic",
-            };
-
             var expected = new List<string> {
                 "diminutive", "ecological", "gesticulate", "rumormonger", "stuntwoman"
             };
 
-            solver.GetPermutations([], solver.chunks, 4);
+            HashSet<string> solutions = [];
+            solver.GetPermutations([], chunks, solutions, 4);
 
-            foreach(string word in expected)
+            var solList = solutions.ToList();
+
+            foreach (string word in expected)
             {
-                CollectionAssert.Contains(solver.results, word);
+                CollectionAssert.Contains(solList, word, "Solutions does not contain all of expected");
             }
         }
     }

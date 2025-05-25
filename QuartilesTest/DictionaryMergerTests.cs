@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using Merger;
+using Paths;
 using System.Collections;
 
 namespace QuartilesTest
@@ -8,14 +9,7 @@ namespace QuartilesTest
     [TestClass]
     public class DictionaryMergerTests
     {
-        /// <summary>
-        /// Tests that the paths for the dictionary merger are valid.
-        /// </summary>
-        [TestMethod]
-        public void DictionaryMerger_DefaultConstructor_PathsAreValid()
-        {
-            var merger = new DictionaryMerger();
-        }
+        private QuartilePaths paths = new QuartilePaths(true);
 
         /// <summary>
         /// Tests that the destination path is valid when passed as a parameter.
@@ -23,9 +17,7 @@ namespace QuartilesTest
         [TestMethod]
         public void DictionaryMerger_DictPathConstructor_PathsAreValid()
         {
-            var paths = new DictionaryMerger();
-            string dictionaryPath = Path.Combine(paths.quartilesCrackerDictFolder, "quartiles_dictionary.txt");
-
+            string dictionaryPath = Path.Combine(paths.QuartilesCrackerDictFolder, "quartiles_dictionary.txt");
             var merger = new DictionaryMerger(dictionaryPath);
         }
 
@@ -35,8 +27,7 @@ namespace QuartilesTest
         [TestMethod]
         public void DictionaryMerger_DictNameConstructor_PathsAreValid()
         {
-            var paths = new DictionaryMerger();
-            var merger = new DictionaryMerger(paths.quartilesCrackerDictFolder, "quartiles_dictionary");
+            var merger = new DictionaryMerger(paths.QuartilesCrackerDictFolder, "quartiles_dictionary");
         }
 
         /// <summary>
@@ -45,8 +36,7 @@ namespace QuartilesTest
         [TestMethod]
         public void DictionaryMerger_SourceDestConstructor_PathsAreValid()
         {
-            var paths = new DictionaryMerger();
-            var merger = new DictionaryMerger(paths.dictionaryUpdaterListsFolder, "known_valid_words", paths.dictionaryMergerDictFolder, "quartiles_dictionary");
+            var merger = new DictionaryMerger(paths.DictionaryUpdaterListsFolder, "known_valid_words", paths.DictionaryMergerDictFolder, "quartiles_dictionary");
         }
 
         /// <summary>
@@ -63,9 +53,8 @@ namespace QuartilesTest
         [TestMethod]
         public void TestDictionary_ContainsCertainValidWords_False()
         {
-            var paths = new DictionaryMerger();
             string dictionaryName = "2of12";
-            string dictionaryPath = Path.Combine(paths.quartilesTestDictFolder, dictionaryName + ".txt");
+            string dictionaryPath = Path.Combine(paths.QuartilesTestDictFolder, dictionaryName + ".txt");
 
             var dictionary = new HashSet<string>(File.ReadAllLines(dictionaryPath));
             Assert.IsFalse(dictionary.Contains("camo"), "Camo should not be part of the original dictionary");
@@ -79,18 +68,17 @@ namespace QuartilesTest
         /// Tests that a merger which never took in a source path throws an exception when using the parameterless merge call that reads from the source path.
         /// </summary>
         [TestMethod]
-        public void MergeDictionaries_NoParam_ThrowsException()
+        public void MergeDictionaries_NoParam_ThrowsFileNotFoundException()
         {
-            var paths = new DictionaryMerger();
             string dictionaryName = "2of12";
-            string dictionaryPath = Path.Combine(paths.quartilesTestDictFolder, dictionaryName + ".txt");
-            string dictionaryCopyPath = Path.Combine(paths.quartilesTestDictCopyFolder, dictionaryName + ".txt");
+            string dictionaryPath = Path.Combine(paths.QuartilesTestDictFolder, dictionaryName + ".txt");
+            string dictionaryCopyPath = Path.Combine(paths.QuartilesTestDictCopyFolder, dictionaryName + ".txt");
 
             var merger = new DictionaryMerger(dictionaryPath);
 
             try
             {
-                Assert.ThrowsException<Exception>(() => merger.MergeDictionaries());
+                Assert.ThrowsException<FileNotFoundException>(() => merger.MergeDictionaries());
             }
 
             finally
@@ -106,15 +94,13 @@ namespace QuartilesTest
         [TestMethod]
         public void MergeDictionaries_NoParamAdd_NoDuplicatesSuccess()
         {
-            var paths = new DictionaryMerger();
-
             string sourceName = "source";
             string dictionaryName = "2of12";
-            string dictionaryPath = Path.Combine(paths.quartilesTestDictFolder, dictionaryName + ".txt");
-            string dictionaryCopyPath = Path.Combine(paths.quartilesTestDictCopyFolder, dictionaryName + ".txt");
+            string dictionaryPath = Path.Combine(paths.QuartilesTestDictFolder, dictionaryName + ".txt");
+            string dictionaryCopyPath = Path.Combine(paths.QuartilesTestDictCopyFolder, dictionaryName + ".txt");
             var seen = new HashSet<string>();
 
-            var merger = new DictionaryMerger(paths.quartilesTestSourceFolder, sourceName, paths.quartilesTestDictFolder, dictionaryName);
+            var merger = new DictionaryMerger(paths.QuartilesTestSourceFolder, sourceName, paths.QuartilesTestDictFolder, dictionaryName);
 
             try
             {
@@ -144,16 +130,14 @@ namespace QuartilesTest
         [TestMethod]
         public void MergeDictionaries_NoParamAdd_MergeSuccess()
         {
-            var paths = new DictionaryMerger();
-
             string sourceName = "source";
             string dictionaryName = "2of12";
-            string dictionaryPath = Path.Combine(paths.quartilesTestDictFolder, dictionaryName + ".txt");
-            string dictionaryCopyPath = Path.Combine(paths.quartilesTestDictCopyFolder, dictionaryName + ".txt");
+            string dictionaryPath = Path.Combine(paths.QuartilesTestDictFolder, dictionaryName + ".txt");
+            string dictionaryCopyPath = Path.Combine(paths.QuartilesTestDictCopyFolder, dictionaryName + ".txt");
 
             var originalDictionary = new HashSet<string>(File.ReadAllLines(dictionaryPath));
 
-            var merger = new DictionaryMerger(paths.quartilesTestSourceFolder, sourceName, paths.quartilesTestDictFolder, dictionaryName);
+            var merger = new DictionaryMerger(paths.QuartilesTestSourceFolder, sourceName, paths.QuartilesTestDictFolder, dictionaryName);
 
             try
             {
@@ -199,11 +183,9 @@ namespace QuartilesTest
         [TestMethod]
         public void MergeDictionaries_SourceStringParamAdd_MergeSuccess()
         {
-            var paths = new DictionaryMerger();
-
             string dictionaryName = "2of12";
-            string dictionaryPath = Path.Combine(paths.quartilesTestDictFolder, dictionaryName + ".txt");
-            string dictionaryCopyPath = Path.Combine(paths.quartilesTestDictCopyFolder, dictionaryName + ".txt");
+            string dictionaryPath = Path.Combine(paths.QuartilesTestDictFolder, dictionaryName + ".txt");
+            string dictionaryCopyPath = Path.Combine(paths.QuartilesTestDictCopyFolder, dictionaryName + ".txt");
 
             var merger = new DictionaryMerger(dictionaryPath);
 
@@ -228,11 +210,9 @@ namespace QuartilesTest
         [TestMethod]
         public void MergeDictionaries_SourceSetParamAdd_MergeSuccess()
         {
-            var paths = new DictionaryMerger();
-
             string dictionaryName = "2of12";
-            string dictionaryPath = Path.Combine(paths.quartilesTestDictFolder, dictionaryName + ".txt");
-            string dictionaryCopyPath = Path.Combine(paths.quartilesTestDictCopyFolder, dictionaryName + ".txt");
+            string dictionaryPath = Path.Combine(paths.QuartilesTestDictFolder, dictionaryName + ".txt");
+            string dictionaryCopyPath = Path.Combine(paths.QuartilesTestDictCopyFolder, dictionaryName + ".txt");
 
             var merger = new DictionaryMerger(dictionaryPath);
             var sourceWords = new HashSet<string> { "camo", "stuntwoman" };
@@ -259,10 +239,9 @@ namespace QuartilesTest
         [TestMethod]
         public void MergeDictionaries_SourceSetParamRemove_MergeSuccess()
         {
-            var paths = new DictionaryMerger();
             string dictionaryName = "2of12";
-            string dictionaryPath = Path.Combine(paths.quartilesTestDictFolder, dictionaryName + ".txt");
-            string dictionaryCopyPath = Path.Combine(paths.quartilesTestDictCopyFolder, dictionaryName + ".txt");
+            string dictionaryPath = Path.Combine(paths.QuartilesTestDictFolder, dictionaryName + ".txt");
+            string dictionaryCopyPath = Path.Combine(paths.QuartilesTestDictCopyFolder, dictionaryName + ".txt");
 
             var originalDictionary = new HashSet<string>(File.ReadAllLines(dictionaryPath));
 

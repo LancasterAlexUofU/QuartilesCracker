@@ -2,6 +2,7 @@
 using System;
 using Updater;
 using Merger;
+using Paths;
 using System.IO;
 
 namespace QuartilesTest
@@ -9,7 +10,7 @@ namespace QuartilesTest
     [TestClass]
     public class DictionaryUpdaterTests
     {
-        private DictionaryMerger paths = new DictionaryMerger();
+        private QuartilePaths paths = new QuartilePaths(true);
 
         /// <summary>
         /// Tests that the known words and invalid words paths are valid
@@ -26,7 +27,7 @@ namespace QuartilesTest
         [TestMethod]
         public void DictionaryUpdater_ConstructorWithDictionaryFolder_PathsAreValid()
         {
-            var updater = new DictionaryUpdater(paths.quartilesTestDictFolder);
+            var updater = new DictionaryUpdater(paths.QuartilesTestDictFolder);
         }
 
         /// <summary>
@@ -35,7 +36,7 @@ namespace QuartilesTest
         [TestMethod]
         public void DictionaryUpdater_ConstructorWithDictionaryAndListFolder_PathsAreValid()
         {
-            var updater = new DictionaryUpdater(paths.quartilesTestListsFolder, paths.quartilesTestDictFolder);
+            var updater = new DictionaryUpdater(paths.QuartilesTestListsFolder, paths.QuartilesTestDictFolder);
         }
 
         /// <summary>
@@ -44,8 +45,8 @@ namespace QuartilesTest
         [TestMethod]
         public void AddToDictionaries_KnownValidWord_AddsToAllDictionariesSuccess()
         {
-            var updater = new DictionaryUpdater(paths.quartilesTestListsFolder, paths.quartilesTestDictFolder);
-            var dictFiles = Directory.GetFiles(paths.quartilesTestDictFolder, "*.txt");
+            var updater = new DictionaryUpdater(paths.QuartilesTestListsFolder, paths.QuartilesTestDictFolder);
+            var dictFiles = Directory.GetFiles(paths.QuartilesTestDictFolder, "*.txt");
 
             try
             {
@@ -70,8 +71,8 @@ namespace QuartilesTest
         [TestMethod]
         public void AddToDictionaries_KnownValidWordSet_AddsToAllDictionariesSuccess()
         {
-            var updater = new DictionaryUpdater(paths.quartilesTestListsFolder, paths.quartilesTestDictFolder);
-            var dictFiles = Directory.GetFiles(paths.quartilesTestDictFolder, "*.txt");
+            var updater = new DictionaryUpdater(paths.QuartilesTestListsFolder, paths.QuartilesTestDictFolder);
+            var dictFiles = Directory.GetFiles(paths.QuartilesTestDictFolder, "*.txt");
             var knownValidWords = new HashSet<string> { "camo", "stuntwoman" };
 
             try
@@ -101,8 +102,8 @@ namespace QuartilesTest
         [TestMethod]
         public void RemoveFromDictionaries_KnownWord_RemovesFromAllDictionariesSuccess()
         {
-            var updater = new DictionaryUpdater(paths.quartilesTestListsFolder, paths.quartilesTestDictFolder);
-            var dictFiles = Directory.GetFiles(paths.quartilesTestDictFolder, "*.txt");
+            var updater = new DictionaryUpdater(paths.QuartilesTestListsFolder, paths.QuartilesTestDictFolder);
+            var dictFiles = Directory.GetFiles(paths.QuartilesTestDictFolder, "*.txt");
             try
             {
                 // Obviously apple is a valid word in this case, just checking it removes from all dictionaries
@@ -127,8 +128,8 @@ namespace QuartilesTest
         [TestMethod]
         public void RemoveFromDictionaries_KnownWords_RemovesFromAllDictionariesSuccess()
         {
-            var updater = new DictionaryUpdater(paths.quartilesTestListsFolder, paths.quartilesTestDictFolder);
-            var dictFiles = Directory.GetFiles(paths.quartilesTestDictFolder, "*.txt");
+            var updater = new DictionaryUpdater(paths.QuartilesTestListsFolder, paths.QuartilesTestDictFolder);
+            var dictFiles = Directory.GetFiles(paths.QuartilesTestDictFolder, "*.txt");
             var words = new HashSet<string> { "apple", "banana" };
 
             try
@@ -158,15 +159,15 @@ namespace QuartilesTest
         [TestMethod]
         public void AddToKnownWords_KnownValidWord_AddsToFileSuccess()
         {
-            var updater = new DictionaryUpdater(paths.quartilesTestListsFolder, paths.quartilesTestDictFolder);
-            var dictFiles = Directory.GetFiles(paths.quartilesTestListsFolder, "*.txt");
+            var updater = new DictionaryUpdater(paths.QuartilesTestListsFolder, paths.QuartilesTestDictFolder);
+            var dictFiles = Directory.GetFiles(paths.QuartilesTestListsFolder, "*.txt");
 
             string knownValidWordsName = "known_valid_words";
-            var knownValidWordsPath = Path.Combine(paths.quartilesTestListsFolder, knownValidWordsName + ".txt");
+            var knownValidWordsPath = Path.Combine(paths.QuartilesTestListsFolder, knownValidWordsName + ".txt");
 
             try
             {
-                updater.AddToKnownWords("camo");
+                updater.AddToValidWords("camo");
 
                 var knownWords = new HashSet<string>(File.ReadAllLines(knownValidWordsPath));
                 Assert.IsTrue(knownWords.Contains("camo"), $"File {knownValidWordsPath} does not contain the word 'camo' after adding it.");
@@ -184,17 +185,17 @@ namespace QuartilesTest
         [TestMethod]
         public void AddToKnownWords_KnownValidWords_AddsToFileSuccess()
         {
-            var updater = new DictionaryUpdater(paths.quartilesTestListsFolder, paths.quartilesTestDictFolder);
-            var dictFiles = Directory.GetFiles(paths.quartilesTestListsFolder, "*.txt");
+            var updater = new DictionaryUpdater(paths.QuartilesTestListsFolder, paths.QuartilesTestDictFolder);
+            var dictFiles = Directory.GetFiles(paths.QuartilesTestListsFolder, "*.txt");
 
             string knownValidWordsName = "known_valid_words";
-            var knownValidWordsPath = Path.Combine(paths.quartilesTestListsFolder, knownValidWordsName + ".txt");
+            var knownValidWordsPath = Path.Combine(paths.QuartilesTestListsFolder, knownValidWordsName + ".txt");
 
             var knownValidWords = new HashSet<string> { "camo", "stuntwoman" };
 
             try
             {
-                updater.AddToKnownWords(knownValidWords);
+                updater.AddToValidWords(knownValidWords);
 
                 var knownWords = new HashSet<string>(File.ReadAllLines(knownValidWordsPath));
 
@@ -216,11 +217,11 @@ namespace QuartilesTest
         [TestMethod]
         public void AddToInvalidWords_KnownInvalidWord_AddsToFileSuccess()
         {
-            var updater = new DictionaryUpdater(paths.quartilesTestListsFolder, paths.quartilesTestDictFolder);
-            var dictFiles = Directory.GetFiles(paths.quartilesTestListsFolder, "*.txt");
+            var updater = new DictionaryUpdater(paths.QuartilesTestListsFolder, paths.QuartilesTestDictFolder);
+            var dictFiles = Directory.GetFiles(paths.QuartilesTestListsFolder, "*.txt");
 
             string knownInvalidWordsName = "known_invalid_words";
-            var knownInvalidWordsPath = Path.Combine(paths.quartilesTestListsFolder, knownInvalidWordsName + ".txt");
+            var knownInvalidWordsPath = Path.Combine(paths.QuartilesTestListsFolder, knownInvalidWordsName + ".txt");
 
             try
             {
@@ -242,11 +243,11 @@ namespace QuartilesTest
         [TestMethod]
         public void AddToInvalidWords_KnownInvalidWords_AddsToFileSuccess()
         {
-            var updater = new DictionaryUpdater(paths.quartilesTestListsFolder, paths.quartilesTestDictFolder);
-            var dictFiles = Directory.GetFiles(paths.quartilesTestListsFolder, "*.txt");
+            var updater = new DictionaryUpdater(paths.QuartilesTestListsFolder, paths.QuartilesTestDictFolder);
+            var dictFiles = Directory.GetFiles(paths.QuartilesTestListsFolder, "*.txt");
 
             string knownInvalidWordsName = "known_invalid_words";
-            var knownInvalidWordsPath = Path.Combine(paths.quartilesTestListsFolder, knownInvalidWordsName + ".txt");
+            var knownInvalidWordsPath = Path.Combine(paths.QuartilesTestListsFolder, knownInvalidWordsName + ".txt");
 
             var knownInvalidWords = new HashSet<string> { "ic", "abcdef" };
 
@@ -282,7 +283,7 @@ namespace QuartilesTest
         public void TestDictionary_ContainsCertainValidWords_False()
         {
             var testWords = new HashSet<string> { "camo", "stuntwoman" };
-            foreach (var file in Directory.GetFiles(paths.quartilesTestDictFolder, "*.txt"))
+            foreach (var file in Directory.GetFiles(paths.QuartilesTestDictFolder, "*.txt"))
             {
                 var dict = new HashSet<string>(File.ReadAllLines(file));
 
@@ -311,8 +312,8 @@ namespace QuartilesTest
             var validTestWords = new HashSet<string> { "camo", "stuntwoman" };
             var invalidTestWords = new HashSet<string> { "ic", "abcdef", "germanic" };
 
-            var knownValidWordsPath = Path.Combine(paths.quartilesTestListsFolder, "known_valid_words.txt");
-            var knownInvalidWordsPath = Path.Combine(paths.quartilesTestListsFolder, "known_invalid_words.txt");
+            var knownValidWordsPath = Path.Combine(paths.QuartilesTestListsFolder, "known_valid_words.txt");
+            var knownInvalidWordsPath = Path.Combine(paths.QuartilesTestListsFolder, "known_invalid_words.txt");
 
             var knownValidWords = new HashSet<string>(File.ReadAllLines(knownValidWordsPath));
             var knownInvalidWords = new HashSet<string>(File.ReadAllLines(knownInvalidWordsPath));
@@ -334,8 +335,8 @@ namespace QuartilesTest
         [TestMethod]
         public void RemoveUpdate_AllWordsAndValidWordsParam_ContainsAllInvalidWords()
         {
-            var updater = new DictionaryUpdater(paths.quartilesTestListsFolder, paths.quartilesTestDictFolder);
-            var dictFiles = Directory.GetFiles(paths.quartilesTestListsFolder, "*.txt");
+            var updater = new DictionaryUpdater(paths.QuartilesTestListsFolder, paths.QuartilesTestDictFolder);
+            var dictFiles = Directory.GetFiles(paths.QuartilesTestListsFolder, "*.txt");
 
             var allWords = new HashSet<string>(new[]
             {
@@ -366,7 +367,7 @@ namespace QuartilesTest
             try
             {
                 updater.RemoveUpdate(allWords, validWords);
-                var knownInvalidWordsPath = Path.Combine(paths.quartilesTestListsFolder, "known_invalid_words.txt");
+                var knownInvalidWordsPath = Path.Combine(paths.QuartilesTestListsFolder, "known_invalid_words.txt");
                 var invalidWordsFile = new HashSet<string>(File.ReadAllLines(knownInvalidWordsPath));
 
                 foreach (var word in invalidWords)
@@ -386,14 +387,14 @@ namespace QuartilesTest
         /// </summary>
         private void DictionaryCleanup()
         {
-            var dictFiles = Directory.GetFiles(paths.quartilesTestDictFolder, "*.txt");
-            var listFiles = Directory.GetFiles(paths.quartilesTestListsFolder, "*.txt");
+            var dictFiles = Directory.GetFiles(paths.QuartilesTestDictFolder, "*.txt");
+            var listFiles = Directory.GetFiles(paths.QuartilesTestListsFolder, "*.txt");
 
             // Clean up the test by copying the original dictionaries back
             foreach (var dictionaryPath in dictFiles)
             {
                 var fileName = Path.GetFileName(dictionaryPath);
-                var dictionaryCopyPath = Path.Combine(paths.quartilesTestDictCopyFolder, fileName);
+                var dictionaryCopyPath = Path.Combine(paths.QuartilesTestDictCopyFolder, fileName);
 
                 File.Copy(dictionaryCopyPath, dictionaryPath, overwrite: true);
             }
@@ -402,7 +403,7 @@ namespace QuartilesTest
             foreach (var listPath in listFiles)
             {
                 var listName = Path.GetFileName(listPath);
-                var listCopyPath = Path.Combine(paths.quartilesTestListsCopyFolder, listName);
+                var listCopyPath = Path.Combine(paths.QuartilesTestListsCopyFolder, listName);
 
                 File.Copy(listCopyPath, listPath, overwrite: true);
             }
