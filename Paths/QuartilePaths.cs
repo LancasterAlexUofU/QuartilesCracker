@@ -22,6 +22,7 @@
         private string _dictionaryUpdaterListsFolder;
         private string _quartilesAnswersFolder;
         private string _quartilesCrackerDictFolder;
+        private string _quartilesCrackerOtherDictFolder;
         private string _quartilesRunnerUpdatedDictFolder;
         private string _quartilesTestDictCopyFolder;
         private string _quartilesTestDictFolder;
@@ -125,6 +126,11 @@
         public string QuartilesCrackerDictFolder { get { VerifyDirectory(_quartilesCrackerDictFolder); return _quartilesCrackerDictFolder; } private set { _quartilesCrackerDictFolder = value; } }
 
         /// <summary>
+        /// Dictionary folder that contains other dictionaries useful for crosschecking and verifying well known words
+        /// </summary>
+        public string QuartilesCrackerOtherDictFolder { get { VerifyDirectory(_quartilesCrackerOtherDictFolder); return _quartilesCrackerOtherDictFolder; } private set { _quartilesCrackerOtherDictFolder = value; } }
+
+        /// <summary>
         /// Dictionary folder, primarily used for directing and testing program outputs
         /// </summary>
         public string QuartilesRunnerUpdatedDictFolder { get { VerifyDirectory(_quartilesRunnerUpdatedDictFolder); return _quartilesRunnerUpdatedDictFolder; } private set { _quartilesRunnerUpdatedDictFolder = value; } }
@@ -180,7 +186,6 @@
         public QuartilePaths(bool filesToBeModified)
         {
             // If adding a new folder, make sure to add to both the BuildRoot and the local root
-
             ChunkWriterRoot = Path.GetFullPath(Path.Combine(SolutionRoot, "ChunkWriter"));
             ChunkRoot = Path.GetFullPath(Path.Combine(SolutionRoot, "Chunk"));
             DictionaryMergerRoot = Path.GetFullPath(Path.Combine(SolutionRoot, "DictionaryMerger"));
@@ -199,6 +204,7 @@
                 DictionaryUpdaterListsFolder = Path.Combine(BuildRoot, "Lists");
                 QuartilesAnswersFolder = Path.Combine(BuildRoot, "QuartilesAnswers");
                 QuartilesCrackerDictFolder = Path.Combine(BuildRoot, "MasterDictionaries");
+                QuartilesCrackerOtherDictFolder = Path.Combine(BuildRoot, "OtherDictionaries");
                 QuartilesTestDictCopyFolder = Path.Combine(BuildRoot, "TestDictionaryCopy");
                 QuartilesTestDictFolder = Path.Combine(BuildRoot, "TestDictionary");
                 QuartilesTestListsCopyFolder = Path.Combine(BuildRoot, "TestListsCopy");
@@ -216,6 +222,7 @@
                 DictionaryUpdaterListsFolder = Path.Combine(DictionaryUpdaterRoot, "Lists");
                 QuartilesAnswersFolder = Path.Combine(QuartilesAnswersRoot, "QuartilesAnswers");
                 QuartilesCrackerDictFolder = Path.Combine(QuartilesCrackerRoot, "MasterDictionaries");
+                QuartilesCrackerOtherDictFolder = Path.Combine(QuartilesCrackerRoot, "OtherDictionaries");
                 QuartilesTestDictCopyFolder = Path.Combine(QuartilesTestRoot, "TestDictionaryCopy");
                 QuartilesTestDictFolder = Path.Combine(QuartilesTestRoot, "TestDictionary");
                 QuartilesTestListsCopyFolder = Path.Combine(QuartilesTestRoot, "TestListsCopy");
