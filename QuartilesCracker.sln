@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChunkWriter", "ChunkWriter\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UpdateRunner", "UpdateRunner\UpdateRunner.csproj", "{6FCDD1D6-059B-481C-A525-AE001D0D3F5A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuartilesToTextRunner", "QuartilesToTextRunner\QuartilesToTextRunner.csproj", "{751F155B-AEBE-4A5E-B904-1D65F69DF730}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{6FCDD1D6-059B-481C-A525-AE001D0D3F5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6FCDD1D6-059B-481C-A525-AE001D0D3F5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6FCDD1D6-059B-481C-A525-AE001D0D3F5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{751F155B-AEBE-4A5E-B904-1D65F69DF730}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{751F155B-AEBE-4A5E-B904-1D65F69DF730}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{751F155B-AEBE-4A5E-B904-1D65F69DF730}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{751F155B-AEBE-4A5E-B904-1D65F69DF730}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

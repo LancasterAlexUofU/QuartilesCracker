@@ -1,6 +1,8 @@
 ﻿using System.Text.RegularExpressions;
 using Tesseract;
 using Paths;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 
 namespace QuartilesToText;
 
@@ -127,24 +129,51 @@ public class QuartilesOCR : IDisposable
         // Using data from tessdata_best/eng.traineddata (which is specifically for LSTM)
         // If you change the engine mode back to using legacy, the eng.traineddata will also need to be changed to the correct one
         engine = new TesseractEngine(paths.QuartilesToTextTessdataFolder, "eng", EngineMode.LstmOnly);
-        engine.DefaultPageSegMode = PageSegMode.SingleBlock;
+        engine.DefaultPageSegMode = PageSegMode.SingleBlock; // Signleblock
     }
+
 
     /// <summary>
     /// Extracts chunks from a Quartiles game image. Note: Scans be inaccurate, especially with 'i's and 'l's. Always verify
     /// </summary>
+    /// <param name="sharpenImage">True if image should be "sharpened" before OCR processing, false otherwise</param>
+    /// <param name="fontIsWhite">True if image is in dark mode with white font, false otherwise</param>
     /// <returns>A list of chunks found in the image</returns>
-    public List<string> ExtractChunks()
+    public List<string> ExtractChunks(bool sharpenImage = true, bool fontIsWhite = false)
     {
         string chunkText;
         List<string> chunks = [];
+        string imagePath = ImagePath;
 
         // Only matches lower case letters between minimum and maximum sizes separated by non-word characters
         string chunkPattern = $@"\b[a-z]{{{MinChunkSize},{MaxChunkSize}}}\b";
 
-        Pix image = Pix.LoadFromFile(ImagePath);
-        Page page = engine.Process(image);
-        chunkText = page.GetText().ToLower();
+        if (sharpenImage)
+        {
+            imagePath = Path.Combine(paths.QuartilesToTextImagesFolder, "temp-sharpened.png");
+
+            // Preprocess using ImageSharp for better OCR results
+            using (var sharpImage = Image.Load(ImagePath))
+            {
+                sharpImage.Mutate(x =>
+                {
+                    x.BinaryThreshold(0.5f); // force to black/white for better OCR results
+                });
+
+                if (fontIsWhite)
+                {
+                    sharpImage.Mutate(x => x.Invert());
+                }
+
+                sharpImage.Save(imagePath);
+            }
+        }
+
+        using (Pix image = Pix.LoadFromFile(imagePath))
+        using (Page page = engine.Process(image))
+        {
+            chunkText = page.GetText().ToLower();
+        }
 
         var matches = Regex.Matches(chunkText, chunkPattern);
 

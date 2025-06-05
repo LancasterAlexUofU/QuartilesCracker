@@ -17,7 +17,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="QuartilesAnswers\" />
+    <None Update="QuartilesAnswers\quartiles-answers-2025-04-26.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="QuartilesAnswers\quartiles-answers-2025-04-25.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
