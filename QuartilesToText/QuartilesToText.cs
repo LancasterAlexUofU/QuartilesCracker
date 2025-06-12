@@ -186,6 +186,30 @@ public class QuartilesOCR : IDisposable
     }
 
     /// <summary>
+    /// Runs OCR on image and returns the chunk list with the most elements
+    /// </summary>
+    /// <para>
+    /// OCR images that process white font usually do worse, so this processes both and takes the best result 
+    /// </para>
+    /// <returns>A list of chunks found in the image</returns>
+    public List<string> ExtractChunksAuto()
+    {
+        var chunkList1 = ExtractChunks();
+        var chunkList2 = ExtractChunks(fontIsWhite: true);
+
+        if (chunkList1.Count >= chunkList2.Count)
+        {
+            return chunkList1;
+        }
+
+        else
+        {
+            return chunkList2;
+        }
+
+    }
+
+    /// <summary>
     /// Given an image of a score number, extracts the score
     /// </summary>
     /// <returns>A string of the scanned score</returns>

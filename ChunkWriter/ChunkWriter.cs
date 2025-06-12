@@ -39,7 +39,7 @@ public class ChunkWriter
                     {
                         Console.WriteLine($"Writing to {imageFileName}.\n");
                         extractor.ImageName = imageFileName;
-                        var chunks = extractor.ExtractChunks();
+                        var chunks = extractor.ExtractChunksAuto();
                         WriteChunksToFile(chunkFilePath, chunks);
                     }
 
